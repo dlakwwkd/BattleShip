@@ -7,7 +7,7 @@
 int _tmain()
 {	
 	srand((unsigned int)time(NULL));
-	system("mode con: lines=30 cols=60");
+	system("mode con: lines=31 cols=60");
 
 	GameManager gameManager;
 	gameManager.StartGame();

@@ -12,7 +12,7 @@ public:
 	void AddPosition(Position pos);
 	void Print();
 	bool PositionCheck(int posX, int posY);
-	int GetHP();
+	int GetHP() { return m_HP; }
 	int GetMaxHP() { return m_MaxHP; }
 	ShipType GetShipType() { return m_Type; }
 	virtual HitResult HitCheck(Position hitPos);

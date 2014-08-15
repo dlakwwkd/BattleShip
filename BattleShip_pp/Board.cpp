@@ -64,13 +64,13 @@ void Board::PrintBoard()
 				SetConsoleTextAttribute(hConsole, 11);
 
 				if (j == 0) printf_s("\t");
-				else printf_s("%2d", j);
+				else printf_s("%3d", j);
 
 				if (j == m_Width)
 				{
 					printf_s("\n");
 					for (int k = 0; k <= m_Width; k++)
-						printf_s("---");
+						printf_s("----");
 				}
 			}
 			else if (j == 0)  // && i == 0
@@ -80,10 +80,11 @@ void Board::PrintBoard()
 			}
 			else
 			{
-				if (m_Board[i - 1][j - 1] != 0)				
+				if (m_Board[i - 1][j - 1] > 0)				
 					SetConsoleTextAttribute(hConsole, 14);
-
-				printf_s("%2d", m_Board[i - 1][j - 1]);
+				else if (m_Board[i - 1][j - 1] < 0)
+					SetConsoleTextAttribute(hConsole, 12);
+				printf_s("%3d", m_Board[i - 1][j - 1]);
 			}
 		}
 		printf_s("\n");
@@ -94,8 +95,20 @@ void Board::PrintBoard()
 
 void Board::ProcessAttack(Position pos)
 {
-
+	if (m_Board[pos.m_X][pos.m_Y] == 0)
+		m_Board[pos.m_X][pos.m_Y] = -1;
+	else
+		m_Board[pos.m_X][pos.m_Y] = -(m_Board[pos.m_X][pos.m_Y]);
 }
+
+bool Board::DuplCheck(int x, int y)
+{
+	if (m_Board[x][y] < 0)
+		return false;
+	else
+		return true;
+}
+
 
 bool Board::MapCheck(int posX, int posY)
 {
@@ -115,9 +128,4 @@ bool Board::IsShipHere(int x, int y)
 		return false;
 	else
 		return true;
-}
-
-bool Board::IsAllSunk()
-{
-	return false;
 }

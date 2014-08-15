@@ -21,7 +21,9 @@ public:
 	//void GiveUp();
 	void SetupShips(); // random location, random direction, check if within map bounds, ships can't overlap
 	void PrintShips();
+	void SetEnemyBoard(Board* enemyBoard);
 	void ProcessHitResult(HitResult hit);
+	bool IsAllSunk();
 	Position Attack();
 	HitResult DoHitCheck(Position pos);
 protected:

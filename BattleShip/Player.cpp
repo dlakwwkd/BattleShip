@@ -16,10 +16,9 @@ Player::Player()
 	m_ShipList.push_back(m_Destroyer);
 
 	m_MyBoard		= new Board();
-	m_EnemyBoard	= new Board();
+	m_EnemyBoard	= nullptr;
 
-	m_MyBoard->SetBoardName("MyBoard");
-	m_EnemyBoard->SetBoardName("Enemy's Board");
+	m_MyBoard->SetBoardName("MyBoard");	//플레이어 넘버 받아서 표시해야할 듯
 }
 
 
@@ -30,7 +29,6 @@ Player::~Player()
 		delete i;
 	}
 	delete m_MyBoard;
-	delete m_EnemyBoard;
 }
 
 void Player::SetupShips()
@@ -67,8 +65,6 @@ void Player::SetupShips()
 		PlaceShip(ship, startX, startY, direction);
 
 	} // continue for loop 
-
-	m_MyBoard->PrintBoard();
 }
 
 void Player::PrintShips()
@@ -79,37 +75,77 @@ void Player::PrintShips()
 	}
 }
 
+void Player::SetEnemyBoard(Board* enemyBoard)
+{
+	m_EnemyBoard = enemyBoard;
+}
+
+
 void Player::ProcessHitResult(HitResult hit)
 {
-	
+	switch (hit)
+	{
+	case HIT:
+		printf_s(" HIT!!");
+		break;
+	case MISS:
+		printf_s(" MISS!!");
+		break;
+	case DESTROY:
+		printf_s(" DESTROY!!");
+		break;
+	case DESTROY_AIRCRAFT:
+		printf_s(" DESTROY_AIRCRAFT!!");
+		break;
+	case DESTROY_BATTLESHIP:
+		printf_s(" DESTROY_BATTLESHIP!!");
+		break;
+	case DESTROY_CRUISER:
+		printf_s(" DESTROY_CRUISER!!");
+		break;
+	case DESTROY_DESTROYER:
+		printf_s(" HITDESTROY_DESTROYER!!");
+		break;
+	default:
+		break;
+	}
 }
 
 Position Player::Attack()
 {
 	Position pos;
-	pos.m_X = 'A';
-	pos.m_Y = '1';
+	int maxHeight = m_MyBoard->GetMaxHeight();
+	int maxWidth = m_MyBoard->GetMaxWidth();
+
+	do{
+		pos.m_X = (char)(rand() % maxWidth);
+		pos.m_Y = (char)(rand() % maxHeight);
+
+	} while (!m_EnemyBoard->DuplCheck(pos.m_X, pos.m_Y));
 
 	return pos;
 }
 
 HitResult Player::DoHitCheck(Position pos)
 {
-
 	for (int i = 0; i < (int)m_ShipList.size(); i++)
 	{
-		// Get ship reference
-		Ship *ship = m_ShipList[i];
-
-		HitResult hitResult = ship->HitCheck(pos);
+		HitResult hitResult = m_ShipList[i]->HitCheck(pos);
 		
 		if (hitResult != MISS)
-		{
 			return hitResult;
-		}
 	}
-
 	return MISS;
+}
+
+bool Player::IsAllSunk()
+{
+	for (auto& i : m_ShipList)
+	{
+		if (i->GetHP() != 0)
+			return false;
+	}
+	return true;
 }
 
 void Player::PlaceShip(Ship* ship, int startX, int startY, Direction direction)

@@ -79,7 +79,8 @@ bool Ship::PositionCheck( int posX, int posY )
 
 HitResult Ship::HitCheck(Position hitPos)
 {
-	hitPos.m_X = (char)tolower(hitPos.m_X);
+	hitPos.m_X = (char)(hitPos.m_X + 'a');
+	hitPos.m_Y = (char)(hitPos.m_Y + '1');
 
 	for (int i = 0; i < m_MaxHP; i++)
 	{
