@@ -6,13 +6,10 @@
 
 int _tmain()
 {	
-	srand((unsigned int)time(NULL));
-	system("mode con: lines=31 cols=60");
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	GameManager gameManager;
-	gameManager.StartGame();
+	GameManager::Instance().GameRun();
 
-	getchar();
 	return 0;
 }
 

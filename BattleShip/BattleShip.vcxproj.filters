@@ -7,6 +7,9 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{c8c0b8fb-e557-4076-8822-bcbcbc0a9602}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{fc2db5b0-376c-4cb5-925a-869f152daa17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -33,13 +36,28 @@
     <ClInclude Include="GameManager.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Enums.h" />
-    <ClInclude Include="Position.h">
+    <ClInclude Include="Human.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Print.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomDialogBox.h">
       <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,9 +77,6 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Ship</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Board.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
@@ -70,5 +85,23 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Human.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Print.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomDialogBox.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -10,12 +10,19 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#include <windows.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string>
-#include <iostream>
-#include <vector>
-
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+
+#include <windows.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <time.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#endif

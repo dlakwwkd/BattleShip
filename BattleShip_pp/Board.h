@@ -17,9 +17,9 @@ public:
 	void AddPosition(int x, int y, int value);
 	void PrintBoard();
 	void ProcessAttack(Position pos);
+	bool IsShipHere(int x, int y);
 	bool DuplCheck(int x, int y);
 	bool MapCheck(int posX, int posY);
-	bool IsShipHere(int x, int y);
 
 private:
 	std::string m_Name;

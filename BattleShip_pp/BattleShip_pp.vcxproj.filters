@@ -7,6 +7,9 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{c8c0b8fb-e557-4076-8822-bcbcbc0a9602}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{9b636ced-a05b-43fb-8f05-b5f3834dc9da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -33,12 +36,12 @@
     <ClInclude Include="GameManager.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
     <ClInclude Include="Position.h">
       <Filter>GameObject</Filter>
     </ClInclude>
@@ -59,9 +62,6 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Ship</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Board.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
@@ -70,5 +70,8 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
