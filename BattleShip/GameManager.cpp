@@ -5,41 +5,65 @@
 #include "Print.h"
 #include "Board.h"
 #include "Ship.h" 
-#include "Setting.h"
 #include "Sound.h"
 
 GameManager::GameManager()
 {
-	m_DialogBox1	= nullptr;
-	m_Player1		= nullptr;
-	m_Player2		= nullptr;
-	m_BoardPlayer1  = nullptr;
-	m_BoardPlayer2  = nullptr;
-	m_Status		= GAMEOVER;
-	m_Turn			= PLAYER_1;
-	m_BoardPos[0]	= { 0, 0 };
-	m_BoardPos[1]	= { 0, 0 };
-	m_GameLoopNum = 1;
-	m_TotalGameTurnNum = 0;
-	m_EachGameTurnNum = 0;
+	m_DialogBox1		= nullptr;
+	m_Player1			= nullptr;
+	m_Player2			= nullptr;
+	m_BoardPlayer1		= nullptr;
+	m_BoardPlayer2		= nullptr;
+	m_Status			= GAMEOVER;
+	m_Turn				= PLAYER_1;
+	m_BoardPos[0]		= { 0, 0 };
+	m_BoardPos[1]		= { 0, 0 };
+	m_MainLoopOn		= true;
+	m_GameLoopNum		= 3;
+	m_EachGameTurnNum	= 0;
+	m_TotalGameTurnNum	= 0;
 }
 
 
 void GameManager::GameRun()
 {
-	SetPlayer();
-
-	for (int i = 0; i < m_GameLoopNum; ++i)
+	while (m_MainLoopOn)
 	{
-		InitGame();
-		PlayGameLoop();
-	}
-	Print::Instance().Gotoxy(0, 0);
-	printf_s("TotalGameTurnNum = %d\n", m_TotalGameTurnNum);
-	printf_s("AverageTotalTurnNum = %f\n", (float)m_TotalGameTurnNum / m_GameLoopNum);
+		MainScreen();
+		MainMenu();
 
-	DelPlayer();
-	CloseGame();
+		SetPlayer();
+		for (int i = 0; i < m_GameLoopNum; ++i)
+		{
+			InitGame();
+			PlayGameLoop();
+		}
+		Print::Instance().Gotoxy(0, 0);
+		printf_s("TotalGameTurnNum = %d\n", m_TotalGameTurnNum);
+		printf_s("AverageTotalTurnNum = %f\n", (float)m_TotalGameTurnNum / m_GameLoopNum);
+
+		DelPlayer();
+		CloseGame();
+	}
+
+}
+
+void GameManager::MainScreen()
+{
+	srand((unsigned int)time(NULL));
+	system("mode con: lines=36 cols=112");
+	system("cls");
+	Board tempBoard;
+	tempBoard.PrintBoard({ (CONSOLE_COLS - tempBoard.GetMaxWidth()*3)/2,
+		CONSOLE_LINES/2 - tempBoard.GetMaxHeight()});
+	
+	Print::Instance().SpecialPrint();
+	Print::Instance().Init();
+}
+
+void GameManager::MainMenu()
+{
+
 }
 
 void GameManager::PlayGameLoop()
@@ -52,31 +76,29 @@ void GameManager::PlayGameLoop()
 		Print::Instance().Init();
 		m_DialogBox1->InitDialog();
 		m_DialogBox1->PrintDialog();
-		m_DialogBox1->InputDialog();
-		m_DialogBox1->ProcessMessage();
+		//m_DialogBox1->InputDialog();
+		//m_DialogBox1->ProcessMessage();
 
 		switch (m_Turn)
 		{
 		case PLAYER_1:
 			{
-				Position attackPosition = m_Player1->Attack();
+				POINT attackPosition = m_Player1->Attack();
 				m_BoardPlayer2->ProcessAttack(attackPosition);
 
 				HitResult hitResult = m_Player2->DoHitCheck(attackPosition);
 				m_Player1->SetPrevAttackInfo({ attackPosition, hitResult });
-				m_BoardPlayer2->ProcessHitResult(hitResult);
 				m_DialogBox1->InputSystemMessage(hitResult);
 				m_Turn = PLAYER_2;
 				break;
 			}
 		case PLAYER_2:
 			{
-				Position attackPosition = m_Player2->Attack();
+				POINT attackPosition = m_Player2->Attack();
 				m_BoardPlayer1->ProcessAttack(attackPosition);
 
 				HitResult hitResult = m_Player1->DoHitCheck(attackPosition);
 				m_Player2->SetPrevAttackInfo({ attackPosition, hitResult });
-				m_BoardPlayer1->ProcessHitResult(hitResult);
 				m_DialogBox1->InputSystemMessage(hitResult);
 				m_Turn = PLAYER_1;
 				break;
@@ -103,14 +125,15 @@ void GameManager::PlayGameLoop()
 
 void GameManager::InitGame()
 {
-	srand((unsigned int)time(NULL));
-	system("mode con: lines=36 cols=112");
+	system("cls");
 	m_Status = PLAYING;
 	m_Turn	 = PLAYER_1;
-	//Sound::Instance().StartSound();
-	
 	m_Player1->InitPlayer();
 	m_Player2->InitPlayer();
+	if (m_DialogBox1) delete m_DialogBox1;
+
+	Print::Instance().Init();
+	Sound::Instance().StartSound();
 
 	// 각 플레이어가 배들을 배치하도록 함
 	m_Player1->SettingShips();
@@ -135,9 +158,11 @@ void GameManager::InitGame()
 void GameManager::CloseGame()
 {
 	Print::Instance().PrintText();
+	Print::Instance().Init();
 	Sound::Instance().CloseSound();
-	getchar();
 	delete m_DialogBox1;
+	m_DialogBox1 = nullptr;
+	getchar();
 }
 
 void GameManager::SetPlayer()

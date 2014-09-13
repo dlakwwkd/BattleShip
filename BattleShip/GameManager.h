@@ -4,7 +4,6 @@
 class CustomDialogBox;
 class Player;
 class Board;
-struct Position;
 
 class GameManager
 {
@@ -19,6 +18,8 @@ public:
 private:
 	GameManager();
 
+	void		MainScreen();
+	void		MainMenu();
 	void		PlayGameLoop();
 	void		InitGame();
 	void		CloseGame();
@@ -37,6 +38,7 @@ private:
 	GameStatus			m_Status;
 	Turn				m_Turn;
 	POINT				m_BoardPos[2];
+	bool				m_MainLoopOn;
 	int					m_GameLoopNum;
 	int					m_EachGameTurnNum;
 	int					m_TotalGameTurnNum;

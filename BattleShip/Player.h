@@ -26,8 +26,8 @@ public:
 	void		InitPlayer();
 	void		SettingShips(); 
 	bool		IsAllSunk();
-	Position	Attack();
-	HitResult	DoHitCheck(Position pos);
+	POINT	Attack();
+	HitResult	DoHitCheck(POINT pos);
 protected:
 	void PlaceShip(Ship* ship, int startX, int startY, Direction direction);
 	bool IsValidShipPosition(int startX, int startY, int maxHp, Direction direction);

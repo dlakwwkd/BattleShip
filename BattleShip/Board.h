@@ -1,6 +1,6 @@
 #pragma once
-#include "Setting.h"
 #include "Enums.h"
+#include "Setting.h"
 
 class Board
 {
@@ -15,8 +15,8 @@ public:
 	void	InitBoard();
 	void	PrintBoard(POINT pos);
 	void	UpdateBoard(POINT pos, Owner owner);
-	void	ProcessAttack(Position pos);
-	void	ProcessHitResult(HitResult hit);
+	void	ProcessAttack(POINT pos);
+	void	ProcessDestroy(std::vector<POINT> shipPos);
 	void	AddPosition(int x, int y, ShipType shipType);
 	bool	IsShipHere(int x, int y);
 	bool	IsValidAttack(int x, int y);

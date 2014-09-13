@@ -16,7 +16,7 @@ Board::Board()
 	}
 	for (int i = 0; i < m_Height; ++i)
 	{
-		for (int j = 0; j < m_Width; j++)
+		for (int j = 0; j < m_Width; ++j)
 		{
 			m_Board[i][j] = 0;
 		}
@@ -38,7 +38,7 @@ void Board::InitBoard()
 {
 	for (int i = 0; i < m_Height; ++i)
 	{
-		for (int j = 0; j < m_Width; j++)
+		for (int j = 0; j < m_Width; ++j)
 		{
 			m_Board[i][j] = 0;
 		}
@@ -104,16 +104,16 @@ void Board::UpdateBoard(POINT pos, Owner owner)
 				case IAM:
 					switch (shipPart)
 					{
-					case 5:
+					case AIRCRAFT:
 						color = A_LIVE;
 						break;
-					case 4:
+					case BATTLESHIP:
 						color = B_LIVE;
 						break;
-					case 3:
+					case CRUISER:
 						color = C_LIVE;
 						break;
-					case 2:
+					case DESTROYER:
 						color = D_LIVE;
 						break;
 					}
@@ -130,23 +130,23 @@ void Board::UpdateBoard(POINT pos, Owner owner)
 				case IAM:
 					switch (shipPart)
 					{
-					case -5:	
-					case -15:
+					case DESTROY_AIRCRAFT:
+					case -AIRCRAFT:
 						color = A_DEATH;
 						break;
-					case -4:
-					case -14:
+					case DESTROY_BATTLESHIP:
+					case -BATTLESHIP:
 						color = B_DEATH;
 						break;
-					case -3:
-					case -13:
+					case DESTROY_CRUISER:
+					case -CRUISER:
 						color = C_DEATH;
 						break;
-					case -2:
-					case -12:
+					case DESTROY_DESTROYER:
+					case -DESTROYER:
 						color = D_DEATH;
 						break;
-					case -1:
+					case MISS:
 						if ((i + j) % 2 == 1)
 							color = TILE_1;
 						else
@@ -157,19 +157,19 @@ void Board::UpdateBoard(POINT pos, Owner owner)
 				case ENEMY:
 					switch (shipPart)
 					{
-					case -15:
+					case DESTROY_AIRCRAFT:
 						color = A_DEATH;
 						break;
-					case -14:
+					case DESTROY_BATTLESHIP:
 						color = B_DEATH;
 						break;
-					case -13:
+					case DESTROY_CRUISER:
 						color = C_DEATH;
 						break;
-					case -12:
+					case DESTROY_DESTROYER:
 						color = D_DEATH;
 						break;
-					case -1:
+					case MISS:
 						if ((i + j) % 2 == 1)
 							color = TILE_1;
 						else
@@ -196,10 +196,10 @@ void Board::UpdateBoard(POINT pos, Owner owner)
 	}
 }
 
-void Board::ProcessAttack(Position pos)
+void Board::ProcessAttack(POINT pos)
 {
-	int x = pos.x - CHAR_X1;
-	int y = pos.y - CHAR_Y1;
+	int x = pos.x;
+	int y = pos.y;
 
 	if (MapCheck(x, y) == false)
 		return;
@@ -210,30 +210,11 @@ void Board::ProcessAttack(Position pos)
 		m_Board[y][x] = -(m_Board[y][x]);
 }
 
-void Board::ProcessHitResult(HitResult hit)
+void Board::ProcessDestroy(std::vector<POINT> shipPos)
 {
-	if (hit == HIT || hit == MISS) return;
-
-	for (int i = 0; i < m_Height; ++i)
+	for (auto& pos : shipPos)
 	{
-		for (int j = 0; j < m_Width; ++j)
-		{
-			switch (hit)
-			{
-			case DESTROY_AIRCRAFT:
-				if (m_Board[i][j] == -5) m_Board[i][j] = m_Board[i][j] - 10;
-				break;
-			case DESTROY_BATTLESHIP:
-				if (m_Board[i][j] == -4) m_Board[i][j] = m_Board[i][j] - 10;
-				break;
-			case DESTROY_CRUISER:
-				if (m_Board[i][j] == -3) m_Board[i][j] = m_Board[i][j] - 10;
-				break;
-			case DESTROY_DESTROYER:
-				if (m_Board[i][j] == -2) m_Board[i][j] = m_Board[i][j] - 10;
-				break;
-			}
-		}
+		m_Board[pos.y][pos.x] -= 10;
 	}
 }
 

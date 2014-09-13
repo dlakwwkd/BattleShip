@@ -8,6 +8,11 @@ BattleShip::BattleShip()
 	m_HP = m_MaxHP;
 	m_Type = BATTLESHIP;
 	m_Name = "BattleShip";
+	m_Pos.reserve(m_MaxHP);
+	for (int i = 0; i < m_MaxHP; ++i)
+	{
+		m_Pos.push_back({ -1, -1 });
+	}
 }
 
 
@@ -15,7 +20,7 @@ BattleShip::~BattleShip()
 {
 }
 
-HitResult BattleShip::HitCheck(Position hitPos)
+HitResult BattleShip::HitCheck(POINT hitPos)
 {
 	HitResult hitResult = Ship::HitCheck(hitPos);
 

@@ -5,9 +5,9 @@
 Print::Print()
 {
 	int x, y;
-	for (y = 0; y < CONSOLE_LINES; y++)
+	for (y = 0; y < CONSOLE_LINES; ++y)
 	{
-		for (x = 0; x < CONSOLE_COLS; x++)
+		for (x = 0; x < CONSOLE_COLS; ++x)
 			m_ScreenBuffer[y][x] = ' ';
 		m_ScreenBuffer[y][x] = '\0';
 	}
@@ -16,12 +16,13 @@ Print::Print()
 void Print::Init()
 {
 	int x, y;
-	for (y = 0; y < CONSOLE_LINES; y++)
+	for (y = 0; y < CONSOLE_LINES; ++y)
 	{
-		for (x = 0; x < CONSOLE_COLS; x++)
+		for (x = 0; x < CONSOLE_COLS; ++x)
 			m_ScreenBuffer[y][x] = ' ';
 		m_ScreenBuffer[y][x] = '\0';
 	}
+	m_Color.clear();
 	SetColor(Color(DEF));
 }
 
@@ -65,4 +66,38 @@ void Print::Gotoxy(int x, int y)
 void Print::SetColor(int color)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)color);
+}
+
+void Print::SpecialPrint()
+{
+	for (auto& color : m_Color)
+	{
+		if (!color.second.empty())
+		{
+			SetColor(Color(color.first));
+			while (!color.second.empty())
+			{
+				Gotoxy(color.second.back().x, color.second.back().y);
+				_putch(m_ScreenBuffer[color.second.back().y][color.second.back().x]);
+				Beep(660, 60);
+				_putch(m_ScreenBuffer[color.second.back().y][color.second.back().x + 1]);
+				Beep(784, 60);
+
+				Gotoxy(CONSOLE_COLS*3/7, CONSOLE_LINES*2 / 3);
+				SetColor(rand() % 15);
+				printf_s("Press anykey...");
+				Sleep(240);
+
+				SetColor(Color(color.first));
+				color.second.pop_back();
+
+				if (_kbhit())
+				{
+					getchar();
+					return;
+				}
+			}
+		}
+	}
+	getchar();
 }

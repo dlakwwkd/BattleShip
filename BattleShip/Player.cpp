@@ -55,10 +55,8 @@ void Player::SettingShips()
 	int startX = 0;
 	int startY = 0;
 
-	for (unsigned int i = 0; i < m_ShipList.size(); ++i)
+	for (auto& ship : m_ShipList)
 	{
-		Ship *ship = m_ShipList[i];
-
 		int maxHp = ship->GetMaxHP();
 		Direction direction = Direction(UP);
 
@@ -82,10 +80,11 @@ bool Player::IsAllSunk()
 	return true;
 }
 
-Position Player::Attack()
+POINT Player::Attack()
 {
 	if (m_PrevAttackInfoList.empty()) return{ -1, -1 };
-	Position pos = { 0, 0 };
+
+	POINT pos = { 0, 0 };
 	int maxHeight = m_MyBoard->GetMaxHeight();
 	int maxWidth = m_MyBoard->GetMaxWidth();
 	int attackX = 0;
@@ -104,20 +103,28 @@ Position Player::Attack()
 /*		}*/
 	} while (!m_EnemyBoard->IsValidAttack(attackX, attackY));
 
-	pos.x = (char)attackX + CHAR_X1;
-	pos.y = (char)attackY + CHAR_Y1;
+	pos.x = attackX;
+	pos.y = attackY;
 
 	return pos;
 }
 
-HitResult Player::DoHitCheck(Position pos)
+HitResult Player::DoHitCheck(POINT pos)
 {
 	for (auto& ship : m_ShipList)
 	{
 		HitResult hitResult = ship->HitCheck(pos);
 		
-		if (hitResult != MISS)
+		switch (hitResult)
+		{
+		case MISS:
+			break;
+		case HIT:
 			return hitResult;
+		default:
+			m_MyBoard->ProcessDestroy(ship->GetShipPos());
+			return hitResult;
+		}
 	}
 	return MISS;
 }
@@ -127,20 +134,20 @@ void Player::PlaceShip(Ship* ship, int startX, int startY, Direction direction)
 	if (ship == nullptr || startX < 0 || startY < 0)
 		return;
 
+	int curX = startX;
+	int curY = startY;
+
 	for (int i = 0; i < ship->GetMaxHP(); ++i)
 	{
-		char curX = (char)(CHAR_X1 + startX);
-		char curY = (char)(CHAR_Y1 + startY);
-
 		ship->AddPosition({ curX, curY });
-		m_MyBoard->AddPosition(startX, startY, ship->GetShipType());
+		m_MyBoard->AddPosition(curX, curY, ship->GetShipType());
 
 		switch (direction)
 		{
-		case UP:	startY--;	break;
-		case DOWN:	startY++;	break;
-		case LEFT:	startX--;	break;
-		case RIGHT:	startX++;	break;
+		case UP:	curY--;	break;
+		case DOWN:	curY++;	break;
+		case LEFT:	curX--;	break;
+		case RIGHT:	curX++;	break;
 		}
 	}
 }
@@ -148,23 +155,27 @@ void Player::PlaceShip(Ship* ship, int startX, int startY, Direction direction)
 bool Player::IsValidShipPosition(int startX, int startY, int maxHp, Direction direction)
 {
 	if (maxHp < 1) return false;
+
+	int curX = startX;
+	int curY = startY;
+
 	for (int i = 0; i < maxHp; ++i)
 	{
-		if (m_MyBoard->MapCheck(startX, startY) == false)
+		if (m_MyBoard->MapCheck(curX, curY) == false)
 		{
 			return false;
 		}
-		if (m_MyBoard->IsShipHere(startX, startY))
+		if (m_MyBoard->IsShipHere(curX, curY))
 		{
 			return false;
 		}
 
 		switch (direction)
 		{
-		case UP:	startY--;	break;
-		case DOWN:	startY++;	break;
-		case LEFT:	startX--;	break;
-		case RIGHT:	startX++;	break;
+		case UP:	curY--;	break;
+		case DOWN:	curY++;	break;
+		case LEFT:	curX--;	break;
+		case RIGHT:	curX++;	break;
 		}
 	}
 	return true;

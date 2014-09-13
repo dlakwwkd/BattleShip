@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "Setting.h"
 #include "Enums.h"
 
 #define CONSOLE_LINES		35
@@ -28,9 +27,10 @@ public:
 	void PrintText();
 	void Gotoxy(int x, int y);
 	void SetColor(int color);
+	void SpecialPrint();
 
 private:
 	Print();
-	std::map<Color, std::vector<POINT>> m_Color;
 	char m_ScreenBuffer[CONSOLE_LINES + 1][CONSOLE_COLS + 1];
+	std::map<Color, std::vector<POINT>> m_Color;
 };

@@ -1,14 +1,8 @@
 #pragma once
 #include "Enums.h"
-struct Position
-{
-	char x;
-	char y;
-};
-
 struct AttackInfo
 {
-	Position	pos;
+	POINT	pos;
 	HitResult	hit;
 };
 

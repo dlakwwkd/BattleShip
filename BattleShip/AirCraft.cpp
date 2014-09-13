@@ -8,6 +8,11 @@ AirCraft::AirCraft()
 	m_HP = m_MaxHP;
 	m_Type = AIRCRAFT;
 	m_Name = "AirCraft";
+	m_Pos.reserve(m_MaxHP);
+	for (int i = 0; i < m_MaxHP; ++i)
+	{
+		m_Pos.push_back({ -1, -1 });
+	}
 }
 
 
@@ -15,7 +20,7 @@ AirCraft::~AirCraft()
 {
 }
 
-HitResult AirCraft::HitCheck(Position hitPos)
+HitResult AirCraft::HitCheck(POINT hitPos)
 {
 	HitResult hitResult = Ship::HitCheck(hitPos);
 

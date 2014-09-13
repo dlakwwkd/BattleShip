@@ -3,8 +3,6 @@
 
 Ship::Ship()
 {
-	m_HP = 0;
-	memset(m_Pos, 0, sizeof(Position)* 5);
 }
 
 
@@ -15,46 +13,47 @@ Ship::~Ship()
 
 void Ship::InitShip()
 {
-	for (int i = 0; i < m_MaxHP; ++i)
+	for (auto& pos : m_Pos)
 	{
-		m_Pos[i].x = 0;
-		m_Pos[i].y = 0;
+		pos.x = -1;
+		pos.y = -1;
 	}
 	m_HP = m_MaxHP;
 }
 
-void Ship::AddPosition(Position pos)
+void Ship::AddPosition(POINT pos)
 {
-	for (int i = 0; i < m_HP; ++i)
+	// 배의 일부분이 지정된 위치에 이미 있는지 체크
+	for (auto& shipPos : m_Pos)
 	{
-		if (m_Pos[i].x == pos.x && m_Pos[i].y == pos.y)
+		if (shipPos.x == pos.x && shipPos.y == pos.y)
 		{
 			printf_s("ERROR : Already Exist\n");
 			return;
 		}
 	}
-	for (int i = 0; i < m_HP; ++i)
+	// 아직 놓이지 않은 배의 부분을 지정된 위치에 놓음
+	for (auto& shipPos : m_Pos)
 	{
-		if (m_Pos[i].x == 0)
+		if (shipPos.x == -1)
 		{
-			m_Pos[i].x = pos.x;
-			m_Pos[i].y = pos.y;
+			shipPos.x = pos.x;
+			shipPos.y = pos.y;
 			break;
 		}
 	}
 }
 
-HitResult Ship::HitCheck(Position hitPos)
+HitResult Ship::HitCheck(POINT hitPos)
 {
-	for (int i = 0; i < m_MaxHP; ++i)
+	for (auto& shipPos : m_Pos)
 	{
-		if (m_Pos[i].x == hitPos.x && m_Pos[i].y == hitPos.y)
+		if (shipPos.x == hitPos.x && shipPos.y == hitPos.y)
 		{
-			m_Pos[i].x = 0;
-			m_Pos[i].y = 0;
-			--m_HP;
-
-			if (m_HP == 0) return DESTROY;
+			if (--m_HP == 0)
+			{
+				return DESTROY;
+			}
 			return HIT;
 		}
 	}
