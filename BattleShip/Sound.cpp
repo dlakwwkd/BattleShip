@@ -32,7 +32,7 @@ void Sound::CloseSound()
 	Sleep(200);
 	Beep(784, 800);
 	Beep(880, 800);
-	Beep(999, 900);
+	Beep(999, 999);
 
 }
 

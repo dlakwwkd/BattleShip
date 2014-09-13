@@ -7,76 +7,52 @@ Ship::Ship()
 	memset(m_Pos, 0, sizeof(Position)* 5);
 }
 
+
 Ship::~Ship()
 {
 }
 
-void Ship::Print()
+
+void Ship::InitShip()
 {
-	printf_s("%s HP : %d POS :[", m_Name.c_str(), m_HP);
 	for (int i = 0; i < m_MaxHP; ++i)
 	{
-		printf_s(" (%c, %c) ", m_Pos[i].m_X, m_Pos[i].m_Y);
+		m_Pos[i].x = 0;
+		m_Pos[i].y = 0;
 	}
-	printf_s("]\n");
-}
-
-void Ship::AddPosition(char x, char y)
-{
-	Position pos = { x, y };
-	AddPosition(pos);
+	m_HP = m_MaxHP;
 }
 
 void Ship::AddPosition(Position pos)
 {
-	pos.m_X = (char)tolower(pos.m_X);
-
-	// Position overlap check
 	for (int i = 0; i < m_HP; ++i)
 	{
-		if (m_Pos[i].m_X == pos.m_X && m_Pos[i].m_Y == pos.m_Y)
+		if (m_Pos[i].x == pos.x && m_Pos[i].y == pos.y)
 		{
 			printf_s("ERROR : Already Exist\n");
 			return;
 		}
 	}
-
-	// Input position into first empty slot
 	for (int i = 0; i < m_HP; ++i)
 	{
-		if (m_Pos[i].m_X == 0)
+		if (m_Pos[i].x == 0)
 		{
-			m_Pos[i].m_X = pos.m_X;
-			m_Pos[i].m_Y = pos.m_Y;
+			m_Pos[i].x = pos.x;
+			m_Pos[i].y = pos.y;
 			break;
 		}
 	}
 }
 
-bool Ship::PositionCheck( int posX, int posY )
-{
-	for( int i = 0; i < m_MaxHP; ++i )
-	{
-		if( m_Pos[i].m_X == posX && m_Pos[i].m_Y == posY )
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
 HitResult Ship::HitCheck(Position hitPos)
 {
-	hitPos.m_X = (char)(hitPos.m_X + 'a');
-	hitPos.m_Y = (char)(hitPos.m_Y + '1');
-
 	for (int i = 0; i < m_MaxHP; ++i)
 	{
-		if (m_Pos[i].m_X == hitPos.m_X && m_Pos[i].m_Y == hitPos.m_Y)
+		if (m_Pos[i].x == hitPos.x && m_Pos[i].y == hitPos.y)
 		{
-			m_Pos[i].m_X = 0;
-			m_Pos[i].m_Y = 0;
-			m_HP--;
+			m_Pos[i].x = 0;
+			m_Pos[i].y = 0;
+			--m_HP;
 
 			if (m_HP == 0) return DESTROY;
 			return HIT;

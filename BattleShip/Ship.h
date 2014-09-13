@@ -13,11 +13,8 @@ public:
 	int					GetMaxHP() { return m_MaxHP; }
 	ShipType			GetShipType() { return m_Type; }
 
-	void				AddPosition(char x, char y);
+	void				InitShip();
 	void				AddPosition(Position pos);
-	void				Print();
-	bool				PositionCheck(int posX, int posY);
-
 	virtual HitResult	HitCheck(Position hitPos);
 	
 protected:

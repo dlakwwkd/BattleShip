@@ -7,7 +7,6 @@
 
 CustomDialogBox::CustomDialogBox()
 {
-	msg = "";
 	msgToken.reserve(MAX_TOKEN_NUM);
 }
 
@@ -52,8 +51,11 @@ void CustomDialogBox::InitDialog()
 void CustomDialogBox::InputDialog()
 {
 	char buf[MAX_STRING_SIZE];
-	msg = fgets(buf, MAX_STRING_SIZE, stdin);
-	msgToken.push_back(msg);
+	
+	fgets(buf, MAX_STRING_SIZE, stdin);
+	if (buf == nullptr)	return;
+	
+	msgToken.push_back(buf);
 }
 
 void CustomDialogBox::PrintDialog()
@@ -79,13 +81,14 @@ void CustomDialogBox::PrintDialog()
 
 void CustomDialogBox::ProcessMessage()
 {
-	if (msg =="exit\n")
+	if (msgToken.back() =="exit\n")
 		GameManager::Instance().GameOff();
 }
 
 
 void CustomDialogBox::InputSystemMessage(HitResult hit)
 {
+	std::string msg = "";
 	switch (hit)
 	{
 	case HIT:

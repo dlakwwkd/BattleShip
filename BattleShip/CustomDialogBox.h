@@ -23,7 +23,6 @@ public:
 	void Decoration();
 
 private:
-	std::string msg;
 	std::vector<std::string> msgToken;
 };
 

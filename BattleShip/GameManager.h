@@ -29,13 +29,16 @@ private:
 	GameStatus	CheckGameStatus();
 
 private:
-	CustomDialogBox*	m_DialogBox;
+	CustomDialogBox*	m_DialogBox1;
 	Player*				m_Player1;
 	Player*				m_Player2;
-	Board*				m_Board_Player1;
-	Board*				m_Board_Player2;
+	Board*				m_BoardPlayer1;
+	Board*				m_BoardPlayer2;
 	GameStatus			m_Status;
 	Turn				m_Turn;
-	POINT				m_Board_Pos[2];
+	POINT				m_BoardPos[2];
+	int					m_GameLoopNum;
+	int					m_EachGameTurnNum;
+	int					m_TotalGameTurnNum;
 };
 

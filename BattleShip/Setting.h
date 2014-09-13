@@ -1,8 +1,15 @@
 #pragma once
+#include "Enums.h"
 struct Position
 {
-	char m_X;
-	char m_Y;
+	char x;
+	char y;
+};
+
+struct AttackInfo
+{
+	Position	pos;
+	HitResult	hit;
 };
 
 #define CHAR_X1 '1'

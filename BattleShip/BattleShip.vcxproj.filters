@@ -39,12 +39,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Enums.h" />
-    <ClInclude Include="Human.h">
-      <Filter>Player</Filter>
-    </ClInclude>
-    <ClInclude Include="AI.h">
-      <Filter>Player</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -85,12 +79,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Human.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
-    <ClCompile Include="AI.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>

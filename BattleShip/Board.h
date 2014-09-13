@@ -12,10 +12,12 @@ public:
 	int		GetMaxWidth() { return m_Width; }
 	int		GetMaxHeight() { return m_Height; }
 
+	void	InitBoard();
 	void	PrintBoard(POINT pos);
 	void	UpdateBoard(POINT pos, Owner owner);
-	void	AddPosition(int x, int y, int value);
 	void	ProcessAttack(Position pos);
+	void	ProcessHitResult(HitResult hit);
+	void	AddPosition(int x, int y, ShipType shipType);
 	bool	IsShipHere(int x, int y);
 	bool	IsValidAttack(int x, int y);
 	bool	MapCheck(int x, int y);

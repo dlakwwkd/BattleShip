@@ -79,7 +79,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AI.h" />
     <ClInclude Include="AirCraft.h" />
     <ClInclude Include="BattleShip.h" />
     <ClInclude Include="Board.h" />
@@ -88,7 +87,6 @@
     <ClInclude Include="Destroyer.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="Human.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Print.h" />
     <ClInclude Include="Setting.h" />
@@ -98,11 +96,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AI.cpp" />
     <ClCompile Include="AirCraft.cpp" />
     <ClCompile Include="BattleShip.cpp" />
     <ClCompile Include="CustomDialogBox.cpp" />
-    <ClCompile Include="Human.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Cruiser.cpp" />

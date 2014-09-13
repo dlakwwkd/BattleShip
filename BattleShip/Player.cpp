@@ -20,27 +20,35 @@ Player::Player()
 	m_MyBoard		= new Board();
 	m_EnemyBoard	= nullptr;
 	m_Name			= "name";
-	m_Type			= 0;
+	m_PrevAttackInfoList.reserve(MAX_PREV_INFO_NUM);
 
 	m_MyBoard->SetBoardName(m_Name);	//플레이어 넘버 받아서 표시해야할 듯
-// 	if (name == "1 Player")
-// 		m_MyBoard->SetBoardPos({ 30, 5 });
-// 	else
-// 		m_MyBoard->SetBoardPos({ 60, 5 });
-
 }
 
 
 Player::~Player()
 {
-	for (auto& i : m_ShipList)
+	for (auto& ship : m_ShipList)
 	{
-		delete i;
+		delete ship;
 	}
+	m_ShipList.clear();
+
 	delete m_MyBoard;
 }
 
-void Player::SetupShips()
+
+void Player::InitPlayer()
+{
+	for (auto& ship : m_ShipList)
+	{
+		ship->InitShip();
+	}
+	m_MyBoard->InitBoard();
+	m_EnemyBoard = nullptr;
+}
+
+void Player::SettingShips()
 {
 	int maxHeight = m_MyBoard->GetMaxHeight();
 	int maxWidth = m_MyBoard->GetMaxWidth();
@@ -61,63 +69,57 @@ void Player::SetupShips()
 		} while (!IsValidShipPosition(startX, startY, maxHp, direction));
 
 		PlaceShip(ship, startX, startY, direction);
-	} 
-}
-
-void Player::PrintShips()
-{
-	for (auto& i : m_ShipList)
-	{
-		i->Print();
 	}
 }
 
-void Player::SetEnemyBoard(Board* enemyBoard)
+bool Player::IsAllSunk()
 {
-	m_EnemyBoard = enemyBoard;
-}
-
-
-void Player::ProcessHitResult(HitResult hit)
-{
-	
+	for (auto& ship : m_ShipList)
+	{
+		if (ship->GetHP() != 0)
+			return false;
+	}
+	return true;
 }
 
 Position Player::Attack()
 {
-	Position pos;
+	if (m_PrevAttackInfoList.empty()) return{ -1, -1 };
+	Position pos = { 0, 0 };
 	int maxHeight = m_MyBoard->GetMaxHeight();
 	int maxWidth = m_MyBoard->GetMaxWidth();
+	int attackX = 0;
+	int attackY = 0;
 
 	do{
-		pos.m_X = (char)(rand() % maxWidth);
-		pos.m_Y = (char)(rand() % maxHeight);
+// 		if (m_PrevAttackInfoList.back().hit == HIT)
+// 		{
+// // 			attackX = ;
+// // 			attackY = ;
+// 		}
+// 		else
+// 		{
+			attackX = rand() % maxWidth;
+			attackY = rand() % maxHeight;
+/*		}*/
+	} while (!m_EnemyBoard->IsValidAttack(attackX, attackY));
 
-	} while (!m_EnemyBoard->IsValidAttack(pos.m_X, pos.m_Y));
+	pos.x = (char)attackX + CHAR_X1;
+	pos.y = (char)attackY + CHAR_Y1;
 
 	return pos;
 }
 
 HitResult Player::DoHitCheck(Position pos)
 {
-	for (unsigned int i = 0; i < m_ShipList.size(); ++i)
+	for (auto& ship : m_ShipList)
 	{
-		HitResult hitResult = m_ShipList[i]->HitCheck(pos);
+		HitResult hitResult = ship->HitCheck(pos);
 		
 		if (hitResult != MISS)
 			return hitResult;
 	}
 	return MISS;
-}
-
-bool Player::IsAllSunk()
-{
-	for (auto& i : m_ShipList)
-	{
-		if (i->GetHP() != 0)
-			return false;
-	}
-	return true;
 }
 
 void Player::PlaceShip(Ship* ship, int startX, int startY, Direction direction)
@@ -127,11 +129,11 @@ void Player::PlaceShip(Ship* ship, int startX, int startY, Direction direction)
 
 	for (int i = 0; i < ship->GetMaxHP(); ++i)
 	{
-		char curX = (char)('a' + startX);
-		char curY = (char)('1' + startY);
+		char curX = (char)(CHAR_X1 + startX);
+		char curY = (char)(CHAR_Y1 + startY);
 
-		ship->AddPosition(curX, curY);
-		m_MyBoard->AddPosition(startX, startY, (int)(ship->GetShipType()));
+		ship->AddPosition({ curX, curY });
+		m_MyBoard->AddPosition(startX, startY, ship->GetShipType());
 
 		switch (direction)
 		{
