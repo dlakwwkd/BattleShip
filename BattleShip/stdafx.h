@@ -13,7 +13,7 @@
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 
-#include <windows.h>
+//#include <windows.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <time.h>
@@ -26,6 +26,16 @@
 #ifdef _DEBUG
 #define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #endif
+
+#ifdef _DEBUG
+// Debug로 빌드하는 경우
+#pragma comment(lib, "BGNL_debug.lib")
+#else
+// Release로 빌드하는 경우
+#pragma comment(lib, "BGNL.lib")
+#endif
+
+#include "Network.h"
 
 struct Position
 {

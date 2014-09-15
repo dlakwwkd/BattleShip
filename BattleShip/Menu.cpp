@@ -61,6 +61,13 @@ void Menu::MenuPlatform(std::vector<std::string>& menuList, int menuType)
 					switch (curMenu)
 					{
 					case 0:
+						GameManager::Instance().SetGameMode(SINGLE_PLAY);
+						PlayerMenu();
+						if (GameManager::Instance().GetMainLoopStatus() == ON)
+							return;
+						break;
+					case 1:
+						GameManager::Instance().SetGameMode(NETWORK_PLAY);
 						PlayerMenu();
 						if (GameManager::Instance().GetMainLoopStatus() == ON)
 							return;

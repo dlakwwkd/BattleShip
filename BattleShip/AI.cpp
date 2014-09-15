@@ -11,7 +11,7 @@ AI::AI()
 	m_PriorityPos = new int*[maxHeight];
 	for (int i = 0; i < maxHeight; ++i)
 	{
-		*(m_PriorityPos + i) = new int[maxWidth];
+		m_PriorityPos[i] = new int[maxWidth];
 	}
 	for (int i = 0; i < maxHeight; ++i)
 	{
@@ -27,10 +27,16 @@ AI::~AI()
 {
 	for (int i = 0; i < m_MyBoard->GetMaxHeight(); ++i)
 	{
-		delete *(m_PriorityPos + i);
+		delete m_PriorityPos[i];
 	}
 	delete m_PriorityPos;
 }
+// 
+// void AI::PriorityFix(Position pos, HitResult hit)
+// {
+// 	
+// }
+// 
 
 void AI::SettingShips()
 {

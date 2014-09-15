@@ -67,7 +67,7 @@ void Human::DeleteShip(Ship* ship, Position curPos, Direction curDir)
 
 	for (int i = 0; i < ship->GetMaxHP(); ++i)
 	{
-		m_MyBoard->AddPosition(curPos.x, curPos.y, NONE);
+		m_MyBoard->AddPosition(curPos.x, curPos.y, NONE_SHIP);
 
 		switch (curDir)
 		{

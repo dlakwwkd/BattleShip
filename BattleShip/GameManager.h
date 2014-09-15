@@ -1,6 +1,7 @@
 #pragma once
 #include "Enums.h"
 
+class Network;
 class CustomDialogBox;
 class Player;
 class Board;
@@ -17,6 +18,7 @@ public:
 	}
 	void		GameRun();
 	void		GameOver() { m_Status = GAMEOVER; }
+	void		SetGameMode(GameMode mode){ m_GameMode = mode; }
 	void		SetGameOnOff(OnOff swit) { m_MainLoopOn = swit; }
 	void		SetPrintOnOff(OnOff swit) { m_PrintOn = swit; }
 	void		SetPlayerType(PlayerType type) { m_PlayerType = type; }
@@ -25,25 +27,30 @@ public:
 private:
 	GameManager();
 
-	void		MainScreen();
-	void		SetGameLoopNum();
-	void		PlayGameLoop();
-	void		InitGame();
-	void		CloseGame();
-	void		SetPlayer();
-	void		DelPlayer();
-	void		SetBoardPos(Position pos, int num);
-	Position	GetBoardPos(int num);
-	GameStatus	CheckGameStatus();
+	void				MainScreen();
+	void				SetGameLoopNum();
+	void				PlayGameLoop();
+	void				InitGame();
+	void				CloseGame();
+	void				SetPlayer();
+	void				DelPlayer();
+	void				NetworkManager();
+	void				InitNetworkGame();
+	void				SetBoardPos(Position pos, int num);
+	Position			GetBoardPos(int num);
+	GameStatus			CheckGameStatus();
+	Network::MapData	TransforMapData(Player* player);
+	HitResult			TransforHitResult(short info);
 
 private:
-	CustomDialogBox*	m_DialogBox1;
+	CustomDialogBox*	m_DialogBox;
 	Player*				m_Player1;
 	Player*				m_Player2;
 	Board*				m_BoardPlayer1;
 	Board*				m_BoardPlayer2;
 	PlayerType			m_PlayerType;
 	GameStatus			m_Status;
+	GameMode			m_GameMode;
 	Turn				m_Turn;
 	Position			m_BoardPos[2];
 	OnOff				m_MainLoopOn;

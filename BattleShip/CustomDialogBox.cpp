@@ -125,6 +125,12 @@ void CustomDialogBox::InputSystemMessage(HitResult hit, int player)
 	msgToken.push_back(msg);
 }
 
+void CustomDialogBox::InputSystemMessage(std::string msg)
+{
+	msgToken.push_back(msg);
+}
+
+
 void CustomDialogBox::Decoration()
 {
 	Print::Instance().Gotoxy(0, CONSOLE_LINES - 7);

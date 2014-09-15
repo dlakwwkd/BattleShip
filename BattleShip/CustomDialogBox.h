@@ -22,6 +22,7 @@ public:
 	void PrintDialog();
 	void ProcessMessage();
 	void InputSystemMessage(HitResult hit, int player);
+	void InputSystemMessage(std::string msg);
 	void Decoration();
 
 private:

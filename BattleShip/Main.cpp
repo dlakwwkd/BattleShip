@@ -10,4 +10,3 @@ int _tmain()
 	GameManager::Instance().GameRun();
 	return 0;
 }
-

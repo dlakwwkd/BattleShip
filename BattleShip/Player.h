@@ -15,16 +15,17 @@ public:
 	Player();
 	~Player();
 
-	void		SetPlayerName(std::string name) { m_Name = name; }
-	void		SetEnemyBoard(Board* enemyBoard) { m_EnemyBoard = enemyBoard; }
-	std::string	GetPlayerName()	{ return m_Name; }
-	Board*		GetMyBoard() { return m_MyBoard; }
-	Board*		GetEnemyBoard() { return m_EnemyBoard; }
-	PlayerType	GetPlayerType() { return m_PlayerType; }
+	void				SetPlayerName(std::string name) { m_Name = name; }
+	void				SetEnemyBoard(Board* enemyBoard) { m_EnemyBoard = enemyBoard; }
+	std::string			GetPlayerName()	{ return m_Name; }
+	Board*				GetMyBoard() { return m_MyBoard; }
+	Board*				GetEnemyBoard() { return m_EnemyBoard; }
+	PlayerType			GetPlayerType() { return m_PlayerType; }
+	std::vector<Ship*>*	GetShipList(){ return &m_ShipList; }
 
-	void		InitPlayer();
-	bool		IsAllSunk();
-	HitResult	DoHitCheck(Position pos);
+	void				InitPlayer();
+	bool				IsAllSunk();
+	HitResult			DoHitCheck(Position pos);
 
 	virtual void		SettingShips() = 0;
 	virtual Position	Attack() = 0;

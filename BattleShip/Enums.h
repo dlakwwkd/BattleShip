@@ -9,8 +9,9 @@ enum Direction
 
 enum HitResult
 {
+	HIT = -10,
 	MISS = -1,
-	HIT,
+	NO_RESULT,
 	DESTROY,
 
 	DESTROY_AIRCRAFT	= -15,
@@ -25,13 +26,19 @@ enum ShipType
 	BATTLESHIP	= 4,
 	CRUISER		= 3,
 	DESTROYER	= 2,
-	NONE		= 0,
+	NONE_SHIP	= 0,
 };
 
 enum GameStatus
 {
 	PLAYING,
 	GAMEOVER,
+};
+
+enum GameMode
+{
+	SINGLE_PLAY,
+	NETWORK_PLAY,
 };
 
 enum OnOff

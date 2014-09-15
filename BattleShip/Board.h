@@ -4,6 +4,8 @@
 #define CHAR_X1 '1'
 #define CHAR_Y1 'A'
 
+class Network;
+
 class Board
 {
 public:
@@ -18,6 +20,7 @@ public:
 	void	PrintBoard(Position pos);
 	void	UpdateBoard(Position pos, Owner owner);
 	void	ProcessAttack(Position pos);
+	void	ProcessAttack(Position pos, HitResult info);
 	void	ProcessDestroy(std::vector<Position> shipPos);
 	void	AddPosition(int x, int y, ShipType shipType);
 	bool	IsShipHere(int x, int y);

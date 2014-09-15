@@ -12,7 +12,7 @@ Board::Board()
 	m_Board = new int*[m_Height];
 	for (int i = 0; i < m_Height; ++i)
 	{
-		*(m_Board + i) = new int[m_Width];
+		m_Board[i] = new int[m_Width];
 	}
 	for (int i = 0; i < m_Height; ++i)
 	{
@@ -28,7 +28,7 @@ Board::~Board()
 {
 	for (int i = 0; i < m_Height; ++i)
 	{
-		delete *(m_Board + i);
+		delete m_Board[i];
 	}
 	delete m_Board;
 }
@@ -209,6 +209,18 @@ void Board::ProcessAttack(Position pos)
 	else
 		m_Board[y][x] = -(m_Board[y][x]);
 }
+
+void Board::ProcessAttack(Position pos, HitResult info)
+{
+	int x = pos.x;
+	int y = pos.y;
+
+	if (MapCheck(x, y) == false)
+		return;
+
+	m_Board[y][x] = info;
+}
+
 
 void Board::ProcessDestroy(std::vector<Position> shipPos)
 {

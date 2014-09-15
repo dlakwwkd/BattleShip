@@ -8,7 +8,8 @@ class AI :
 public:
 	AI();
 	~AI();
-
+ 
+ 	//void		PriorityFix(Position pos, HitResult hit);
 	void		SettingShips();
 	Position	Attack();
 
