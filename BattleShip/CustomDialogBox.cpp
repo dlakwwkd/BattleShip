@@ -66,8 +66,10 @@ void CustomDialogBox::PrintDialog()
 	for (unsigned int i = 0; i < msgToken.size(); ++i)
 	{
 		Print::Instance().Gotoxy(DIALOG_BOX_POS_X + 2, DIALOG_BOX_POS_Y + DIALOG_BOX_SIZE_Y - 3 - i);
-		if (msgToken[msgToken.size() - i - 1][0] == ':')
+		if (msgToken[msgToken.size() - i - 1][0] == '>')
 			Print::Instance().SetColor(SKY);
+		else if (msgToken[msgToken.size() - i - 1][0] == '<')
+			Print::Instance().SetColor(RED);
 		else
 			Print::Instance().SetColor(GRAY);
 		printf_s("%s", msgToken[msgToken.size() - i - 1].c_str());
@@ -81,44 +83,46 @@ void CustomDialogBox::PrintDialog()
 
 void CustomDialogBox::ProcessMessage()
 {
-	if (msgToken.back() =="exit\n")
-		GameManager::Instance().GameOff();
+	if (msgToken.back() == "exit\n")
+	{
+		GameManager::Instance().GameOver();
+		GameManager::Instance().SetGameOnOff(OFF);
+	}
 }
 
-
-void CustomDialogBox::InputSystemMessage(HitResult hit)
+void CustomDialogBox::InputSystemMessage(HitResult hit, int player)
 {
 	std::string msg = "";
+	if (player == PLAYER_1) msg = ">> ";
+	else msg = "<< ";
 	switch (hit)
 	{
 	case HIT:
 		Sound::Instance().HitSound();
-		msg = ":Hit!";
+		msg += "Hit!";
 		break;
 	case MISS:
 		Sound::Instance().MissSound();
-		msg = ":Miss..";
+		msg += "Miss..";
 		break;
 	case DESTROY_AIRCRAFT:
 		Sound::Instance().DestroySound();
-		msg = ":Destroy Aircraft!!";
+		msg += "Destroy Aircraft!!";
 		break;
 	case DESTROY_BATTLESHIP:
 		Sound::Instance().DestroySound();
-		msg = ":Destroy BattleShip!!";
+		msg += "Destroy BattleShip!!";
 		break;
 	case DESTROY_CRUISER:
 		Sound::Instance().DestroySound();
-		msg = ":Destroy Cruiser!!";
+		msg += "Destroy Cruiser!!";
 		break;
 	case DESTROY_DESTROYER:
 		Sound::Instance().DestroySound();
-		msg = ":Destroy Destroyer!!";
+		msg += "Destroy Destroyer!!";
 		break;
 	}
 	msgToken.push_back(msg);
-	if (msgToken.size() > MAX_TOKEN_NUM)
-		msgToken.erase(msgToken.begin());
 }
 
 void CustomDialogBox::Decoration()

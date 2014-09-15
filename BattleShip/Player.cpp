@@ -20,9 +20,8 @@ Player::Player()
 	m_MyBoard		= new Board();
 	m_EnemyBoard	= nullptr;
 	m_Name			= "name";
-	m_PrevAttackInfoList.reserve(MAX_PREV_INFO_NUM);
 
-	m_MyBoard->SetBoardName(m_Name);	//플레이어 넘버 받아서 표시해야할 듯
+	m_MyBoard->SetBoardName(m_Name);	
 }
 
 
@@ -48,28 +47,6 @@ void Player::InitPlayer()
 	m_EnemyBoard = nullptr;
 }
 
-void Player::SettingShips()
-{
-	int maxHeight = m_MyBoard->GetMaxHeight();
-	int maxWidth = m_MyBoard->GetMaxWidth();
-	int startX = 0;
-	int startY = 0;
-
-	for (auto& ship : m_ShipList)
-	{
-		int maxHp = ship->GetMaxHP();
-		Direction direction = Direction(UP);
-
-		do {
-			direction = (Direction)(rand() % 4);
-			startX = rand() % maxWidth;
-			startY = rand() % maxHeight;
-		} while (!IsValidShipPosition(startX, startY, maxHp, direction));
-
-		PlaceShip(ship, startX, startY, direction);
-	}
-}
-
 bool Player::IsAllSunk()
 {
 	for (auto& ship : m_ShipList)
@@ -80,36 +57,7 @@ bool Player::IsAllSunk()
 	return true;
 }
 
-POINT Player::Attack()
-{
-	if (m_PrevAttackInfoList.empty()) return{ -1, -1 };
-
-	POINT pos = { 0, 0 };
-	int maxHeight = m_MyBoard->GetMaxHeight();
-	int maxWidth = m_MyBoard->GetMaxWidth();
-	int attackX = 0;
-	int attackY = 0;
-
-	do{
-// 		if (m_PrevAttackInfoList.back().hit == HIT)
-// 		{
-// // 			attackX = ;
-// // 			attackY = ;
-// 		}
-// 		else
-// 		{
-			attackX = rand() % maxWidth;
-			attackY = rand() % maxHeight;
-/*		}*/
-	} while (!m_EnemyBoard->IsValidAttack(attackX, attackY));
-
-	pos.x = attackX;
-	pos.y = attackY;
-
-	return pos;
-}
-
-HitResult Player::DoHitCheck(POINT pos)
+HitResult Player::DoHitCheck(Position pos)
 {
 	for (auto& ship : m_ShipList)
 	{

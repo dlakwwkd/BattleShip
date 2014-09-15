@@ -20,7 +20,7 @@ Cruiser::~Cruiser()
 {
 }
 
-HitResult Cruiser::HitCheck(POINT hitPos)
+HitResult Cruiser::HitCheck(Position hitPos)
 {
 	HitResult hitResult = Ship::HitCheck(hitPos);
 

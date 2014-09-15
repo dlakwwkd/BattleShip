@@ -27,10 +27,12 @@ public:
 	void PrintText();
 	void Gotoxy(int x, int y);
 	void SetColor(int color);
+
 	void SpecialPrint();
+	void MenuPrint(int curMenu, std::vector<std::string> menuList);
 
 private:
 	Print();
 	char m_ScreenBuffer[CONSOLE_LINES + 1][CONSOLE_COLS + 1];
-	std::map<Color, std::vector<POINT>> m_Color;
+	std::map<Color, std::vector<Position>> m_Color;
 };

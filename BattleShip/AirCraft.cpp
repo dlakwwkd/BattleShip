@@ -20,7 +20,7 @@ AirCraft::~AirCraft()
 {
 }
 
-HitResult AirCraft::HitCheck(POINT hitPos)
+HitResult AirCraft::HitCheck(Position hitPos)
 {
 	HitResult hitResult = Ship::HitCheck(hitPos);
 

@@ -20,7 +20,7 @@ Destroyer::~Destroyer()
 {
 }
 
-HitResult Destroyer::HitCheck(POINT hitPos)
+HitResult Destroyer::HitCheck(Position hitPos)
 {
 	HitResult hitResult = Ship::HitCheck(hitPos);
 

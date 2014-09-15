@@ -6,7 +6,6 @@
 #include "Cruiser.h"
 #include "Destroyer.h"
 #include "Enums.h"
-#include "Setting.h"
 
 #define MAX_PREV_INFO_NUM 5
 
@@ -18,21 +17,24 @@ public:
 
 	void		SetPlayerName(std::string name) { m_Name = name; }
 	void		SetEnemyBoard(Board* enemyBoard) { m_EnemyBoard = enemyBoard; }
-	void		SetPrevAttackInfo(AttackInfo Info) { m_PrevAttackInfoList.push_back(Info); }
 	std::string	GetPlayerName()	{ return m_Name; }
 	Board*		GetMyBoard() { return m_MyBoard; }
 	Board*		GetEnemyBoard() { return m_EnemyBoard; }
+	PlayerType	GetPlayerType() { return m_PlayerType; }
 
 	void		InitPlayer();
-	void		SettingShips(); 
 	bool		IsAllSunk();
-	POINT	Attack();
-	HitResult	DoHitCheck(POINT pos);
+	HitResult	DoHitCheck(Position pos);
+
+	virtual void		SettingShips() = 0;
+	virtual Position	Attack() = 0;
+
 protected:
 	void PlaceShip(Ship* ship, int startX, int startY, Direction direction);
 	bool IsValidShipPosition(int startX, int startY, int maxHp, Direction direction);
 
 protected:
+	PlayerType				m_PlayerType;
 	std::string				m_Name;
 	std::vector<Ship*>		m_ShipList;
 	AirCraft*				m_Aircraft;
@@ -41,7 +43,5 @@ protected:
 	Destroyer*				m_Destroyer[2];
 	Board*					m_MyBoard;
 	Board*					m_EnemyBoard;
-	std::vector<AttackInfo>	m_PrevAttackInfoList;
-
 };
 

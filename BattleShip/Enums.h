@@ -2,9 +2,9 @@
 enum Direction
 {
 	UP,
+	RIGHT,
 	DOWN,
 	LEFT,
-	RIGHT,
 };
 
 enum HitResult
@@ -25,12 +25,19 @@ enum ShipType
 	BATTLESHIP	= 4,
 	CRUISER		= 3,
 	DESTROYER	= 2,
+	NONE		= 0,
 };
 
 enum GameStatus
 {
 	PLAYING,
 	GAMEOVER,
+};
+
+enum OnOff
+{
+	OFF,
+	ON
 };
 
 enum Turn
@@ -46,10 +53,17 @@ enum Owner
 	ENEMY,
 };
 
+enum PlayerType
+{
+	AI_PLAYER,
+	HUMAN_PLAYER,
+};
+
 enum Color
 {
 	DEF			= 15,
 	GREEN		= 10,
+	RED			= 12,
 	GRAY		= 8,
 	SKY			= 11,
 	BOX			= 63,
@@ -67,4 +81,22 @@ enum Color
 	B_DEATH		= 23,
 	C_DEATH		= 39,
 	D_DEATH		= 111,
+};
+
+enum InputKey
+{
+	SCAN_CODE	= 224,
+	ENTER_KEY	= 13,
+	SPACE_KEY	= 32,
+	ESC_KEY		= 27,
+	UP_KEY		= 72,
+	DOWN_KEY	= 80,
+	LEFT_KEY	= 75,
+	RIGHT_KEY	= 77,
+};
+
+enum MenuType
+{
+	MAIN_MENU,
+	PlAYER_MENU,
 };

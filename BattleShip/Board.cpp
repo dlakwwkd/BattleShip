@@ -6,13 +6,13 @@
 Board::Board()
 {
 	m_Name = "UnNamed Board";
-	m_Width = 8;
 	m_Height = 8;
+	m_Width = 8;
 
-	m_Board = (int**)malloc(sizeof(int)* m_Height);
+	m_Board = new int*[m_Height];
 	for (int i = 0; i < m_Height; ++i)
 	{
-		*(m_Board + i) = (int*)malloc(sizeof(int)* m_Width);
+		*(m_Board + i) = new int[m_Width];
 	}
 	for (int i = 0; i < m_Height; ++i)
 	{
@@ -28,9 +28,9 @@ Board::~Board()
 {
 	for (int i = 0; i < m_Height; ++i)
 	{
-		free(*(m_Board + i));
+		delete *(m_Board + i);
 	}
-	free(m_Board);
+	delete m_Board;
 }
 
 
@@ -45,7 +45,7 @@ void Board::InitBoard()
 	}
 }
 
-void Board::PrintBoard(POINT pos)
+void Board::PrintBoard(Position pos)
 {
 	if (pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES)
 		return;
@@ -85,7 +85,7 @@ void Board::PrintBoard(POINT pos)
 	}
 }
 
-void Board::UpdateBoard(POINT pos, Owner owner)
+void Board::UpdateBoard(Position pos, Owner owner)
 {
 	if (pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES)
 		return;
@@ -196,7 +196,7 @@ void Board::UpdateBoard(POINT pos, Owner owner)
 	}
 }
 
-void Board::ProcessAttack(POINT pos)
+void Board::ProcessAttack(Position pos)
 {
 	int x = pos.x;
 	int y = pos.y;
@@ -210,7 +210,7 @@ void Board::ProcessAttack(POINT pos)
 		m_Board[y][x] = -(m_Board[y][x]);
 }
 
-void Board::ProcessDestroy(std::vector<POINT> shipPos)
+void Board::ProcessDestroy(std::vector<Position> shipPos)
 {
 	for (auto& pos : shipPos)
 	{

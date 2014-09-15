@@ -7,6 +7,6 @@ public:
 	~Cruiser();
 
 
-	HitResult HitCheck(POINT hitPos);
+	HitResult HitCheck(Position hitPos);
 };
 

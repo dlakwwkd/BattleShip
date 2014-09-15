@@ -15,11 +15,13 @@ public:
 	CustomDialogBox();
 	~CustomDialogBox();
 
+	std::string	GetMessage(){ return msgToken.back(); }
+
 	void InitDialog();
 	void InputDialog();
 	void PrintDialog();
 	void ProcessMessage();
-	void InputSystemMessage(HitResult hit);
+	void InputSystemMessage(HitResult hit, int player);
 	void Decoration();
 
 private:

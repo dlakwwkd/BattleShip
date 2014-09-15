@@ -12,6 +12,9 @@ public:
 	void MissSound();
 	void HitSound();
 	void DestroySound();
+	void MenuMoveSound();
+	void MenuEnterSound();
+	void MenuESCSound();
 private:
 	Sound();
 };

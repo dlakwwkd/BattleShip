@@ -5,6 +5,8 @@ class CustomDialogBox;
 class Player;
 class Board;
 
+#define MAX_PLAY_NUM 9999
+
 class GameManager
 {
 public:
@@ -14,19 +16,24 @@ public:
 		return instance;
 	}
 	void		GameRun();
-	void		GameOff() { m_Status = GAMEOVER; }
+	void		GameOver() { m_Status = GAMEOVER; }
+	void		SetGameOnOff(OnOff swit) { m_MainLoopOn = swit; }
+	void		SetPrintOnOff(OnOff swit) { m_PrintOn = swit; }
+	void		SetPlayerType(PlayerType type) { m_PlayerType = type; }
+	OnOff		GetMainLoopStatus() { return m_MainLoopOn; }
+
 private:
 	GameManager();
 
 	void		MainScreen();
-	void		MainMenu();
+	void		SetGameLoopNum();
 	void		PlayGameLoop();
 	void		InitGame();
 	void		CloseGame();
 	void		SetPlayer();
 	void		DelPlayer();
-	void		SetBoardPos(POINT pos, int num);
-	POINT		GetBoardPos(int num);
+	void		SetBoardPos(Position pos, int num);
+	Position	GetBoardPos(int num);
 	GameStatus	CheckGameStatus();
 
 private:
@@ -35,10 +42,12 @@ private:
 	Player*				m_Player2;
 	Board*				m_BoardPlayer1;
 	Board*				m_BoardPlayer2;
+	PlayerType			m_PlayerType;
 	GameStatus			m_Status;
 	Turn				m_Turn;
-	POINT				m_BoardPos[2];
-	bool				m_MainLoopOn;
+	Position			m_BoardPos[2];
+	OnOff				m_MainLoopOn;
+	OnOff				m_PrintOn;
 	int					m_GameLoopNum;
 	int					m_EachGameTurnNum;
 	int					m_TotalGameTurnNum;

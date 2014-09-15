@@ -68,6 +68,7 @@ void Print::SetColor(int color)
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)color);
 }
 
+
 void Print::SpecialPrint()
 {
 	for (auto& color : m_Color)
@@ -79,14 +80,13 @@ void Print::SpecialPrint()
 			{
 				Gotoxy(color.second.back().x, color.second.back().y);
 				_putch(m_ScreenBuffer[color.second.back().y][color.second.back().x]);
-				Beep(660, 60);
+				Sleep(60);
 				_putch(m_ScreenBuffer[color.second.back().y][color.second.back().x + 1]);
-				Beep(784, 60);
 
 				Gotoxy(CONSOLE_COLS*3/7, CONSOLE_LINES*2 / 3);
 				SetColor(rand() % 15);
-				printf_s("Press anykey...");
-				Sleep(240);
+				printf_s("Press any key...");
+				Sleep(300);
 
 				SetColor(Color(color.first));
 				color.second.pop_back();
@@ -100,4 +100,20 @@ void Print::SpecialPrint()
 		}
 	}
 	getchar();
+}
+
+void Print::MenuPrint(int curMenu, std::vector<std::string> menuList)
+{
+	int i = 0;
+	for (auto& menu : menuList)
+	{
+		Gotoxy(CONSOLE_COLS * 2 / 5, CONSOLE_LINES * 2 / 5 + i);
+		if(curMenu == i++) SetColor(GREEN);
+		else SetColor(DEF);
+
+		for (unsigned int j = 10; j > menu.length()/2; --j)
+			printf_s(" ");
+		printf_s("[ %s ]", menu.c_str());
+	}
+	SetColor(DEF);
 }

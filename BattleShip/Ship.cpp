@@ -21,9 +21,8 @@ void Ship::InitShip()
 	m_HP = m_MaxHP;
 }
 
-void Ship::AddPosition(POINT pos)
+void Ship::AddPosition(Position pos)
 {
-	// 배의 일부분이 지정된 위치에 이미 있는지 체크
 	for (auto& shipPos : m_Pos)
 	{
 		if (shipPos.x == pos.x && shipPos.y == pos.y)
@@ -32,7 +31,6 @@ void Ship::AddPosition(POINT pos)
 			return;
 		}
 	}
-	// 아직 놓이지 않은 배의 부분을 지정된 위치에 놓음
 	for (auto& shipPos : m_Pos)
 	{
 		if (shipPos.x == -1)
@@ -44,7 +42,7 @@ void Ship::AddPosition(POINT pos)
 	}
 }
 
-HitResult Ship::HitCheck(POINT hitPos)
+HitResult Ship::HitCheck(Position hitPos)
 {
 	for (auto& shipPos : m_Pos)
 	{

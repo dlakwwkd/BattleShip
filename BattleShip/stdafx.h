@@ -26,3 +26,9 @@
 #ifdef _DEBUG
 #define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #endif
+
+struct Position
+{
+	int x;
+	int y;
+};

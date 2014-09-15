@@ -20,7 +20,7 @@ BattleShip::~BattleShip()
 {
 }
 
-HitResult BattleShip::HitCheck(POINT hitPos)
+HitResult BattleShip::HitCheck(Position hitPos)
 {
 	HitResult hitResult = Ship::HitCheck(hitPos);
 

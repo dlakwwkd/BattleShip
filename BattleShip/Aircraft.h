@@ -7,6 +7,6 @@ public:
 	~AirCraft();
 
 
-	HitResult HitCheck(POINT hitPos);
+	HitResult HitCheck(Position hitPos);
 };
 

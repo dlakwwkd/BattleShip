@@ -1,6 +1,8 @@
 #pragma once
 #include "Enums.h"
-#include "Setting.h"
+
+#define CHAR_X1 '1'
+#define CHAR_Y1 'A'
 
 class Board
 {
@@ -13,10 +15,10 @@ public:
 	int		GetMaxHeight() { return m_Height; }
 
 	void	InitBoard();
-	void	PrintBoard(POINT pos);
-	void	UpdateBoard(POINT pos, Owner owner);
-	void	ProcessAttack(POINT pos);
-	void	ProcessDestroy(std::vector<POINT> shipPos);
+	void	PrintBoard(Position pos);
+	void	UpdateBoard(Position pos, Owner owner);
+	void	ProcessAttack(Position pos);
+	void	ProcessDestroy(std::vector<Position> shipPos);
 	void	AddPosition(int x, int y, ShipType shipType);
 	bool	IsShipHere(int x, int y);
 	bool	IsValidAttack(int x, int y);
@@ -27,8 +29,8 @@ private:
 
 private:
 	std::string m_Name;
-	int			m_Width;
 	int			m_Height;
+	int			m_Width;
 	int**		m_Board;
 };
 

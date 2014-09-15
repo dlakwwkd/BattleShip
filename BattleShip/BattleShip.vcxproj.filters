@@ -48,11 +48,17 @@
     <ClInclude Include="Sound.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Setting.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="CustomDialogBox.h">
       <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Human.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +96,15 @@
     </ClCompile>
     <ClCompile Include="CustomDialogBox.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Human.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

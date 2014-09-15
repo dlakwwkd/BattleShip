@@ -7,6 +7,6 @@ public:
 	~Destroyer();
 
 
-	HitResult HitCheck(POINT hitPos);
+	HitResult HitCheck(Position hitPos);
 };
 
