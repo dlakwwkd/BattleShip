@@ -35,11 +35,10 @@ private:
 	void				SetPlayer();
 	void				DelPlayer();
 	void				NetworkManager();
-	void				InitNetworkGame();
 	void				SetBoardPos(Position pos, int num);
 	Position			GetBoardPos(int num);
 	GameStatus			CheckGameStatus();
-	Network::MapData	TransforMapData(Player* player);
+	ShipData			TransforShipData(Player* player);
 	HitResult			TransforHitResult(short info);
 
 private:

@@ -23,10 +23,10 @@ public:
 	PlayerType			GetPlayerType() { return m_PlayerType; }
 	std::vector<Ship*>*	GetShipList(){ return &m_ShipList; }
 
-	void				InitPlayer();
 	bool				IsAllSunk();
 	HitResult			DoHitCheck(Position pos);
 
+	virtual void		InitPlayer();
 	virtual void		SettingShips() = 0;
 	virtual Position	Attack() = 0;
 
@@ -38,10 +38,6 @@ protected:
 	PlayerType				m_PlayerType;
 	std::string				m_Name;
 	std::vector<Ship*>		m_ShipList;
-	AirCraft*				m_Aircraft;
-	BattleShip*				m_Battleship;
-	Cruiser*				m_Cruiser;
-	Destroyer*				m_Destroyer[2];
 	Board*					m_MyBoard;
 	Board*					m_EnemyBoard;
 };

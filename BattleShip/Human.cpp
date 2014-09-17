@@ -17,7 +17,7 @@ Human::~Human()
 {
 }
 
-void Human::MoveShip(Ship* ship, Position& curPos, Direction& curDir)
+void Human::MoveShip(Ship* ship, Position* curPos, Direction* curDir)
 {
 	int maxHp = ship->GetMaxHP();
 	int input = _getch();
@@ -28,20 +28,20 @@ void Human::MoveShip(Ship* ship, Position& curPos, Direction& curDir)
 		switch (input)
 		{
 		case UP_KEY:
-			if (IsValidShipPosition(curPos.x, curPos.y - 1, maxHp, curDir))
-				curPos.y--;
+			if (IsValidShipPosition(curPos->x, curPos->y - 1, maxHp, *curDir))
+				curPos->y--;
 			break;
 		case DOWN_KEY:
-			if (IsValidShipPosition(curPos.x, curPos.y + 1, maxHp, curDir))
-				curPos.y++;
+			if (IsValidShipPosition(curPos->x, curPos->y + 1, maxHp, *curDir))
+				curPos->y++;
 			break;
 		case LEFT_KEY:
-			if (IsValidShipPosition(curPos.x - 1, curPos.y, maxHp, curDir))
-				curPos.x--;
+			if (IsValidShipPosition(curPos->x - 1, curPos->y, maxHp, *curDir))
+				curPos->x--;
 			break;
 		case RIGHT_KEY:
-			if (IsValidShipPosition(curPos.x + 1, curPos.y, maxHp, curDir))
-				curPos.x++;
+			if (IsValidShipPosition(curPos->x + 1, curPos->y, maxHp, *curDir))
+				curPos->x++;
 			break;
 		}
 		Sound::Instance().MenuMoveSound();
@@ -51,10 +51,10 @@ void Human::MoveShip(Ship* ship, Position& curPos, Direction& curDir)
 		Sound::Instance().MenuEnterSound();
 		break;
 	case SPACE_KEY:
-		int temp = curDir;
+		int temp = *curDir;
 		temp = (temp + 1) % 4;
-		if (IsValidShipPosition(curPos.x, curPos.y, maxHp, (Direction)temp))
-			curDir = (Direction)temp;
+		if (IsValidShipPosition(curPos->x, curPos->y, maxHp, (Direction)temp))
+			*curDir = (Direction)temp;
 		Sound::Instance().MenuMoveSound();
 		break;
 	}
@@ -108,7 +108,7 @@ void Human::SettingShips()
 			Print::Instance().PrintText();
 			Print::Instance().Init();
 			DeleteShip(ship, curPos, direction);
-			MoveShip(ship, curPos, direction);
+			MoveShip(ship, &curPos, &direction);
 			PlaceShip(ship, curPos.x, curPos.y, direction);
 		}
 		m_ShipMoveLoop = ON;

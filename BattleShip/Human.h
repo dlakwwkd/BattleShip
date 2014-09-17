@@ -12,7 +12,7 @@ public:
 
 	void		SetMyDialogBox(CustomDialogBox* box) { m_MyDialogBox = box; }
 
-	void		MoveShip(Ship* ship, Position& curPos, Direction& curDir);
+	void		MoveShip(Ship* ship, Position* curPos, Direction* curDir);
 	void		DeleteShip(Ship* ship, Position curPos, Direction curDir);
 	void		SettingShips();
 	Position	Attack();

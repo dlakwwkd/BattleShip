@@ -125,11 +125,12 @@ void GameManager::PlayGameLoop()
 				Position attackPos = m_Player1->Attack();
 				m_BoardPlayer2->ProcessAttack(attackPos);
 				HitResult hitResult = m_Player2->DoHitCheck(attackPos);
-// 				if (m_Player1->GetPlayerType() == AI_PLAYER)
-// 				{
-// 					
-// 				}
 
+				if (m_PlayerType == AI_PLAYER)
+				{
+					AI* temp = (AI*)m_Player1;
+					temp->UpdatePriority(attackPos, hitResult);
+				}
 
 				if (m_PrintOn)
 					m_DialogBox->InputSystemMessage(hitResult, PLAYER_1);
@@ -142,6 +143,9 @@ void GameManager::PlayGameLoop()
 				Position attackPos = m_Player2->Attack();
 				m_BoardPlayer1->ProcessAttack(attackPos);
 				HitResult hitResult = m_Player1->DoHitCheck(attackPos);
+
+				AI* temp = (AI*)m_Player2;
+				temp->UpdatePriority(attackPos, hitResult);
 
 				if (m_PrintOn)
 					m_DialogBox->InputSystemMessage(hitResult, PLAYER_2);
@@ -174,8 +178,12 @@ void GameManager::PlayGameLoop()
 
 void GameManager::InitGame()
 {
-	m_Status = PLAYING;
-	m_Turn	 = PLAYER_1;
+	if (m_GameMode == NETWORK_PLAY) puts("게임 시작!!");
+	else
+	{
+		m_Status = PLAYING;
+		m_Turn = PLAYER_1;
+	}
 	m_Player1->InitPlayer();
 	m_Player2->InitPlayer();
 	if (m_DialogBox) delete m_DialogBox;
@@ -197,8 +205,10 @@ void GameManager::InitGame()
 	m_Player1->GetMyBoard()->PrintBoard({ MY_BOARD_POS_X, MY_BOARD_POS_Y });
 	m_Player1->GetEnemyBoard()->PrintBoard({ ENEMY_BOARD_POS_X, ENEMY_BOARD_POS_Y });
 
+	// 네트워크 플레이의 경우 상대편 배는 내가 배치하는게 아니므로 셋팅하지 않는다.
 	m_Player1->SettingShips();
-	m_Player2->SettingShips();
+	if (m_GameMode == SINGLE_PLAY)
+		m_Player2->SettingShips();
 
 	m_Player1->GetMyBoard()->UpdateBoard({ MY_BOARD_POS_X, MY_BOARD_POS_Y }, IAM);
 	m_Player1->GetEnemyBoard()->UpdateBoard({ ENEMY_BOARD_POS_X, ENEMY_BOARD_POS_Y }, ENEMY);
@@ -283,7 +293,7 @@ void GameManager::NetworkManager()
 	// 서버에 연결
 	try
 	{
-		network.Connect("10.73.42.117", 9001);
+		network.Connect("10.73.42.117", 9000);
 	}
 	catch (Network::Exception ex)
 	{
@@ -310,8 +320,8 @@ void GameManager::NetworkManager()
 		이미 있는 이름을 쓰면 ET_DUPLICATED_NAME이 온다.
 		*/
 		const wchar_t name[MAX_NAME_LEN] = L"잉여";
-
-		error = network.SubmitName(name);
+		int number = 141033;
+		error = network.SubmitName(name,number);
 		if (error == ET_DUPLICATED_NAME)
 		{
 			puts("이미 존재하는 이름입니다.");
@@ -322,8 +332,11 @@ void GameManager::NetworkManager()
 		** 게임 시작 대기
 		PKT_SC_START_GAME 패킷을 기다린다.
 		*/
-		puts("게임 시작 대기중..");
-		network.WaitSpecPacket(PKT_SC_GAME_START);
+		Network::GameStartData gameStartData;
+		puts("게임 시작 대기중");
+		network.WaitForStart(&gameStartData);
+		wprintf_s(L"매칭되었습니다. 상대방 이름: %s, 학번: %d\n", gameStartData.oppositionName, gameStartData.oppositionStudentID);
+
 
 		/*
 		** 게임 시작
@@ -335,19 +348,20 @@ void GameManager::NetworkManager()
 		bool allOver = false;
 		while (!allOver)
 		{
-			InitNetworkGame();
+			InitGame();
 			/*
 			** 맵 제출
 			자신이 배치한 맵 데이터를 서버로 전송한다.
-			맵 데이터는 char형 32크기 배열이다.
-			Aircraft부터 순서대로 배의 좌표들을 넣는다.
+			맵 데이터는 char형 64크기 배열이다.
+			8*8 맵을 넣어주세욜
 			*/
-			Network::MapData mapData;
+			ShipData shipData;
+			char mapData[MAP_SIZE];
 			while (true)
 			{
-				mapData = TransforMapData(m_Player1);
-
-				error = network.SubmitMap(&mapData);
+				shipData = TransforShipData(m_Player1);
+				shipData.ToMapData(mapData);
+				error = network.SubmitMap(mapData);
 				if (error == ET_INVALID_MAP)
 				{
 					if (m_PrintOn)
@@ -407,7 +421,7 @@ void GameManager::NetworkManager()
 					{
 						Position attackPos = m_Player1->Attack();
 
-						error = network.SubmitAttack(attackPos.x, attackPos.y);
+						error = network.SubmitAttack(Coord(attackPos.x, attackPos.y));
 						if (error == ET_INVALID_ATTACK)
 						{
 							if (m_PrintOn)
@@ -426,14 +440,22 @@ void GameManager::NetworkManager()
 					// 공격 결과
 				case PKT_SC_ATTACK_RESULT:
 				{
-					Network::AttackResult attackResult;
-					network.GetAttackResult(&attackResult);
-
-					Position attackPos = { attackResult.x, attackResult.y };
+					Network::AttackResultData attackResult;
+					attackResult = network.GetAttackResult();
+					
+					Position attackPos = { attackResult.pos.mX, attackResult.pos.mY };
 					HitResult hitResult = TransforHitResult(attackResult.attackResult);
 
+					
 					if (attackResult.isMine)
+					{
+						if (m_PlayerType == AI_PLAYER)
+						{
+							AI* temp = (AI*)m_Player1;
+							temp->UpdatePriority(attackPos, hitResult);
+						}
 						m_BoardPlayer2->ProcessAttack(attackPos, hitResult);
+					}
 					else
 						m_BoardPlayer1->ProcessAttack(attackPos);
 
@@ -453,8 +475,8 @@ void GameManager::NetworkManager()
 					// 게임 종료
 				case PKT_SC_GAME_OVER:
 				{
-					Network::GameResult gameResult;
-					network.GetGameResult(&gameResult);
+					Network::GameResultData gameResult;
+					gameResult = network.GetGameResult();
 					if (gameResult.isWinner)
 					{
 						if (m_PrintOn)
@@ -500,8 +522,8 @@ void GameManager::NetworkManager()
 			}
 			else if (type == PKT_SC_ALL_OVER)
 			{
-				Network::FinalResult finalResult;
-				network.GetFinalResult(&finalResult);
+				Network::FinalResultData finalResult;
+				finalResult = network.GetFinalResult();
 				puts("모두 종료");
 				printf_s("승리 횟수: %d, 평균 턴 수: %.1f", finalResult.winCount, finalResult.avgTurns);
 
@@ -541,43 +563,6 @@ void GameManager::NetworkManager()
 	network.Disconnect();
 }
 
-void GameManager::InitNetworkGame()
-{
-	if (m_GameMode == NETWORK_PLAY) puts("게임 시작!!");
-	m_Player1->InitPlayer();
-	m_Player2->InitPlayer();
-	if (m_DialogBox) delete m_DialogBox;
-	if (m_PrintOn)
-	{
-		Print::Instance().Init();
-		Sound::Instance().StartSound();
-		m_DialogBox = new CustomDialogBox();
-		if (m_PlayerType == HUMAN_PLAYER)
-		{
-			Human* temp = (Human*)m_Player1;
-			temp->SetMyDialogBox(m_DialogBox);
-		}
-	}
-	m_BoardPlayer1 = m_Player1->GetMyBoard();
-	m_BoardPlayer2 = m_Player2->GetMyBoard();
-	m_Player1->SetEnemyBoard(m_BoardPlayer2);
-	m_Player1->GetMyBoard()->PrintBoard({ MY_BOARD_POS_X, MY_BOARD_POS_Y });
-	m_Player1->GetEnemyBoard()->PrintBoard({ ENEMY_BOARD_POS_X, ENEMY_BOARD_POS_Y });
-
-	m_Player1->SettingShips();
-
-	m_Player1->GetMyBoard()->UpdateBoard({ MY_BOARD_POS_X, MY_BOARD_POS_Y }, IAM);
-	m_Player1->GetEnemyBoard()->UpdateBoard({ ENEMY_BOARD_POS_X, ENEMY_BOARD_POS_Y }, ENEMY);
-
-	if (m_PrintOn)
-	{
-		Print::Instance().PrintText();
-		Print::Instance().Init();
-		m_DialogBox->InitDialog();
-		m_DialogBox->PrintDialog();
-	}
-}
-
 
 void GameManager::SetBoardPos(Position pos, int num)
 {
@@ -603,40 +588,21 @@ GameStatus GameManager::CheckGameStatus()
 	return PLAYING;
 }
 
-Network::MapData GameManager::TransforMapData(Player* player)
+ShipData GameManager::TransforShipData(Player* player)
 {
-	Network::MapData temp;
-	int i = 0;
-	for (auto& coord : temp.aircraft)
+	ShipData ret;
+	Coord temp[MAX_SHIP_NUM + 1][MAX_SHIP_LEN];
+	for (int idx = 1; idx <= MAX_SHIP_NUM; ++idx)
 	{
-		Position pos = player->GetShipList()->at(0)->GetShipPos()[i++];
-		coord = { pos.x, pos.y };
+		auto ship = player->GetShipList()->at(idx - 1);
+		for (int l = 0; l < ship->GetMaxHP(); l++)
+		{
+			Position pos = ship->GetShipPos()[l];
+			temp[idx][l] = Coord(pos.x, pos.y);
+		}
+		ret.SetShip((ShipData::ShipType)(idx), temp[idx]);
 	}
-	i = 0;
-	for (auto& coord : temp.battleship)
-	{
-		Position pos = player->GetShipList()->at(1)->GetShipPos()[i++];
-		coord = { pos.x, pos.y };
-	}
-	i = 0;
-	for (auto& coord : temp.cruiser)
-	{
-		Position pos = player->GetShipList()->at(2)->GetShipPos()[i++];
-		coord = { pos.x, pos.y };
-	}
-	i = 0;
-	for (auto& coord : temp.destroyer1)
-	{
-		Position pos = player->GetShipList()->at(3)->GetShipPos()[i++];
-		coord = { pos.x, pos.y };
-	}
-	i = 0;
-	for (auto& coord : temp.destroyer2)
-	{
-		Position pos = player->GetShipList()->at(4)->GetShipPos()[i++];
-		coord = { pos.x, pos.y };
-	}
-	return temp;
+	return ret;
 }
 
 HitResult GameManager::TransforHitResult(short info)
@@ -647,13 +613,13 @@ HitResult GameManager::TransforHitResult(short info)
 		return MISS;
 	case AR_HIT:
 		return HIT;
-	case AR_DESTORY_AIRCRAFT:
+	case AR_DESTROY_AIRCRAFT:
 		return DESTROY_AIRCRAFT;
-	case AR_DESTORY_BATTLESHIP:
+	case AR_DESTROY_BATTLESHIP:
 		return DESTROY_BATTLESHIP;
-	case AR_DESTORY_CRUISER:
+	case AR_DESTROY_CRUISER:
 		return DESTROY_CRUISER;
-	case AR_DESTORY_DESTORYER:
+	case AR_DESTROY_DESTROYER:
 		return DESTROY_DESTROYER;
 	default:
 		return HitResult(NO_RESULT);

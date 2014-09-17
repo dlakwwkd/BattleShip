@@ -4,18 +4,12 @@
 
 Player::Player()
 {
-	m_Aircraft		= new AirCraft();
-	m_Battleship	= new BattleShip();
-	m_Cruiser		= new Cruiser();
-	m_Destroyer[0]	= new Destroyer();
-	m_Destroyer[1]  = new Destroyer();
-
 	m_ShipList.reserve(5);
-	m_ShipList.push_back(m_Aircraft);
-	m_ShipList.push_back(m_Battleship);
-	m_ShipList.push_back(m_Cruiser);
-	m_ShipList.push_back(m_Destroyer[0]);
-	m_ShipList.push_back(m_Destroyer[1]);
+	m_ShipList.push_back(new AirCraft());
+	m_ShipList.push_back(new BattleShip());
+	m_ShipList.push_back(new Cruiser());
+	m_ShipList.push_back(new Destroyer());
+	m_ShipList.push_back(new Destroyer());
 
 	m_MyBoard		= new Board();
 	m_EnemyBoard	= nullptr;

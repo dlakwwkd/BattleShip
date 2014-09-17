@@ -7,6 +7,12 @@ enum Direction
 	LEFT,
 };
 
+enum AIType
+{
+	HUNT,
+	TARGET,
+};
+
 enum HitResult
 {
 	HIT = -10,
@@ -106,4 +112,18 @@ enum MenuType
 {
 	MAIN_MENU,
 	PlAYER_MENU,
+};
+
+enum PriorityCalcRate
+{
+	LITTLE_INCREASE		= 1,
+	NORMAL_INCREASE		= 3,
+	HIGH_INCREASE		= 6,
+	VERY_HIGH_INCREASE	= 10,
+	HIGHEST_PRIORITY	= 1000,
+	LITTLE_DECREASE		= -1,
+	NORMAL_DECREASE		= -3,
+	HIGH_DECREASE		= -6,
+	VERY_HIGH_DECREASE	= -10,
+	LOWEST_PRIORITY		= -1000,
 };

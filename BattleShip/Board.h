@@ -15,6 +15,7 @@ public:
 	void	SetBoardName(std::string name) { m_Name = name; }
 	int		GetMaxWidth() { return m_Width; }
 	int		GetMaxHeight() { return m_Height; }
+	int**	GetBoard(){ return m_Board; }
 
 	void	InitBoard();
 	void	PrintBoard(Position pos);

@@ -80,13 +80,13 @@ void Print::SpecialPrint()
 			{
 				Gotoxy(color.second.back().x, color.second.back().y);
 				_putch(m_ScreenBuffer[color.second.back().y][color.second.back().x]);
-				Sleep(60);
+				Sleep(50);
 				_putch(m_ScreenBuffer[color.second.back().y][color.second.back().x + 1]);
 
 				Gotoxy(CONSOLE_COLS*3/7, CONSOLE_LINES*2 / 3);
 				SetColor(rand() % 15);
 				printf_s("Press any key...");
-				Sleep(300);
+				Sleep(200);
 
 				SetColor(Color(color.first));
 				color.second.pop_back();
