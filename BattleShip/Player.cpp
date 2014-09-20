@@ -103,7 +103,7 @@ bool Player::IsValidShipPosition(int startX, int startY, int maxHp, Direction di
 
 	for (int i = 0; i < maxHp; ++i)
 	{
-		if (m_MyBoard->MapCheck(curX, curY) == false)
+		if (m_MyBoard->IsInBoard(curX, curY) == false)
 		{
 			return false;
 		}

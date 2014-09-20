@@ -116,6 +116,7 @@ enum MenuType
 
 enum PriorityCalcRate
 {
+	ZERO				= 0,
 	LITTLE_INCREASE		= 1,
 	NORMAL_INCREASE		= 3,
 	HIGH_INCREASE		= 6,

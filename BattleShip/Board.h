@@ -26,7 +26,8 @@ public:
 	void	AddPosition(int x, int y, ShipType shipType);
 	bool	IsShipHere(int x, int y);
 	bool	IsValidAttack(int x, int y);
-	bool	MapCheck(int x, int y);
+	bool	IsInBoard(int x, int y);
+	PriorityCalcRate	IsConfinedPos(int x, int y);
 
 private:
 	std::string CoordTrans(char coord);

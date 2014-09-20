@@ -28,9 +28,9 @@ Board::~Board()
 {
 	for (int i = 0; i < m_Height; ++i)
 	{
-		delete m_Board[i];
+		delete[] m_Board[i];
 	}
-	delete m_Board;
+	delete[] m_Board;
 }
 
 
@@ -201,7 +201,7 @@ void Board::ProcessAttack(Position pos)
 	int x = pos.x;
 	int y = pos.y;
 
-	if (MapCheck(x, y) == false)
+	if (IsInBoard(x, y) == false)
 		return;
 
 	if (m_Board[y][x] == 0)
@@ -215,12 +215,11 @@ void Board::ProcessAttack(Position pos, HitResult info)
 	int x = pos.x;
 	int y = pos.y;
 
-	if (MapCheck(x, y) == false)
+	if (IsInBoard(x, y) == false)
 		return;
 
 	m_Board[y][x] = info;
 }
-
 
 void Board::ProcessDestroy(std::vector<Position> shipPos)
 {
@@ -232,7 +231,7 @@ void Board::ProcessDestroy(std::vector<Position> shipPos)
 
 void Board::AddPosition(int x, int y, ShipType shipType)
 {
-	if (MapCheck(x, y) == false)
+	if (IsInBoard(x, y) == false)
 		return;
 
 	m_Board[y][x] = (int)shipType;
@@ -240,7 +239,7 @@ void Board::AddPosition(int x, int y, ShipType shipType)
 
 bool Board::IsShipHere(int x, int y)
 {
-	if (MapCheck(x, y) == false)
+	if (IsInBoard(x, y) == false)
 		return false;
 
 	if (m_Board[y][x] == 0)
@@ -251,7 +250,7 @@ bool Board::IsShipHere(int x, int y)
 
 bool Board::IsValidAttack(int x, int y)
 {
-	if (MapCheck(x,y) == false)
+	if (IsInBoard(x,y) == false)
 		return false;
 
 	if (m_Board[y][x] < 0)
@@ -260,7 +259,7 @@ bool Board::IsValidAttack(int x, int y)
 		return true;
 }
 
-bool Board::MapCheck(int x, int y)
+bool Board::IsInBoard(int x, int y)
 {
 	if (x < 0 || x >= m_Width ||
 		y < 0 || y >= m_Height)
@@ -268,6 +267,38 @@ bool Board::MapCheck(int x, int y)
 	else
 		return true;
 }
+
+PriorityCalcRate Board::IsConfinedPos(int x, int y)
+{
+	int outsideNum = 0;
+	int missNum = 0;
+	int destroyNum = 0;
+
+	for (int dy = -1; dy < 2; ++dy)
+	{
+		for (int dx = -1; dx < 2; ++dx)
+		{
+			if ((dx + dy) % 2 != 0)
+			{
+				if (!IsInBoard(x + dx, y + dy))
+				{
+					outsideNum++;
+					break;
+				}
+				if (m_Board[y + dy][x + dx] == MISS)
+					missNum++;
+				if (m_Board[y + dy][x + dx] < HIT)
+					destroyNum++;
+			}
+		}
+	}
+	// 확실하게 배가 존재할 가능성이 없는 경우
+	if (outsideNum + missNum + destroyNum > 3)
+		return LOWEST_PRIORITY;
+	else
+		return ZERO;
+}
+
 
 std::string Board::CoordTrans(char coord)
 {
