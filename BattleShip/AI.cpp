@@ -4,27 +4,25 @@
 
 AI::AI()
 {
-	m_PlayerType = AI_PLAYER;
-	m_MaxShipSize = 5;
+	m_PlayerType	= AI_PLAYER;
+	m_MaxShipSize	= 5;
 	m_PrevHitResult = NO_RESULT;
-	m_PriorityDir = DOWN;
-	m_FirstHitPos = { -1, -1 };
-	m_PrevHitPos = { -1, -1 };
+	m_PriorityDir	= DOWN;
+	m_FirstHitPos	= { -1, -1 };
+	m_PrevHitPos	= { -1, -1 };
 
-	int maxHeight = m_MyBoard->GetMaxHeight();
-	int maxWidth = m_MyBoard->GetMaxWidth();
+	int maxHeight	= m_MyBoard->GetMaxHeight();
+	int maxWidth	= m_MyBoard->GetMaxWidth();
 
+	// 2차원 배열 동적 할당
 	m_PriorityPos = new int*[maxHeight];
 	for (int y = 0; y < maxHeight; ++y)
-	{
 		m_PriorityPos[y] = new int[maxWidth];
-	}
+	// 초기화
 	for (int y = 0; y < maxHeight; ++y)
 	{
 		for (int x = 0; x < maxWidth; ++x)
-		{
-			m_PriorityPos[y][x] = 0;
-		}
+			m_PriorityPos[y][x] = ZERO;
 	}
 	InitPriority();
 }
@@ -32,29 +30,34 @@ AI::AI()
 
 AI::~AI()
 {
+	// 동적 할당 해제
 	for (int i = 0; i < m_MyBoard->GetMaxHeight(); ++i)
-	{
 		delete[] m_PriorityPos[i];
-	}
 	delete[] m_PriorityPos;
 }
 
+/*
+	AI는 플레이어 초기화 시 추가적으로 우선순위 정보도 초기화 한다.
+*/
 void AI::InitPlayer()
 {
 	Player::InitPlayer();
 	InitPriority();
 }
 
+/*
+	우선순위에 관련된 모든 것을 초기화 하는 함수
+*/
 void AI::InitPriority()
 {
-	m_MaxShipSize = 5;
+	m_MaxShipSize	= 5;
 	m_PrevHitResult = NO_RESULT;
-	m_PriorityDir = DOWN;
-	m_FirstHitPos = { -1, -1 };
-	m_PrevHitPos = { -1, -1 };
+	m_PriorityDir	= DOWN;
+	m_FirstHitPos	= { -1, -1 };
+	m_PrevHitPos	= { -1, -1 };
 
-	int maxHeight = m_MyBoard->GetMaxHeight();
-	int maxWidth = m_MyBoard->GetMaxWidth();
+	int maxHeight	= m_MyBoard->GetMaxHeight();
+	int maxWidth	= m_MyBoard->GetMaxWidth();
 
 	// 우선순위 테이블 초기화
 	for (int y = 0; y < maxHeight; ++y)
@@ -70,13 +73,14 @@ void AI::InitPriority()
 					m_PriorityPos[y][x] += LITTLE_INCREASE;
 			}
 			else
-				m_PriorityPos[y][x] = 0;
-
-			
+				m_PriorityPos[y][x] = ZERO;
 		}
 	}
 }
 
+/*
+	공격한 좌표(pos)와 공격결과(hit)를 받아와 우선순위를 갱신하는 함수
+*/
 void AI::UpdatePriority(Position pos, HitResult hit)
 {
 	switch (hit)
@@ -163,12 +167,14 @@ void AI::UpdatePriority(Position pos, HitResult hit)
 	}
 }
 
+/*
+	배를 배치하는 함수
+*/
 void AI::SettingShips()
 {
 	int maxHeight = m_MyBoard->GetMaxHeight();
 	int maxWidth = m_MyBoard->GetMaxWidth();
-	int startX = 0;
-	int startY = 0;
+	Position startPos = { 0, 0 };
 
 	for (auto& ship : m_ShipList)
 	{
@@ -177,14 +183,17 @@ void AI::SettingShips()
 
 		do {
 			direction = (Direction)(rand() % 4);
-			startX = rand() % maxWidth;
-			startY = rand() % maxHeight;
-		} while (!IsValidShipPosition(startX, startY, maxHp, direction));
+			startPos.x = rand() % maxWidth;
+			startPos.y = rand() % maxHeight;
+		} while (!IsValidShipPosition(startPos, direction, maxHp));
 
-		PlaceShip(ship, startX, startY, direction);
+		PlaceShip(ship, startPos, direction);
 	}
 }
 
+/*
+	우선순위가 가장 높을 곳을 찾아 공격하는 함수
+*/
 Position AI::Attack()
 {
 	int maxHeight = m_MyBoard->GetMaxHeight();
@@ -236,11 +245,16 @@ Position AI::Attack()
 		//따라서 우선순위를 다시 검색한다.
 	} while (highstPriority != LOWEST_PRIORITY);
 	//highstPriority가 LOWEST_PRIORITY 라는 것은 공격할 곳이 아무데도 없다는 뜻
-
+	_ASSERT(highstPriority != LOWEST_PRIORITY);
 	return{ -1, -1 };
 }
 
-void AI::RangeUpdate(int range, Position& pos, PriorityCalcRate crossForm, PriorityCalcRate xForm)
+/*
+	범위의 크기(range)와 중앙좌표(pos)와 상하좌우에 적용할 수치(crossForm)와 대각선에 적용할 수치(xForm)를 받아
+	우선순위 값을 변경하는 함수
+	- 참고로 range가 2 이상이면, 체크무늬 형태로 적용된다.
+*/
+void AI::RangeUpdate(int range, Position pos, PriorityCalcRate crossForm, PriorityCalcRate xForm)
 {
 	int dx = 0;
 	int dy = 0;
@@ -266,7 +280,10 @@ void AI::RangeUpdate(int range, Position& pos, PriorityCalcRate crossForm, Prior
 	}
 }
 
-void AI::DecideNextAttack(Position& pos, Direction dir)
+/*
+	현재 좌표(pos)와 나아갈 방향(dir)을 받아 한 칸 앞의 좌표의 우선순위를 최대치로 만드는 함수
+*/
+void AI::DecideNextAttack(Position pos, Direction dir)
 {
 	// 방향에 따른 좌표 증감 변수 설정
 	int dx = 0;
@@ -290,7 +307,10 @@ void AI::DecideNextAttack(Position& pos, Direction dir)
 	m_PriorityPos[y][x] = HIGHEST_PRIORITY;
 }
 
-Direction AI::DecideBestDir(Position& pos)
+/*
+	현재 좌표(pos)를 받아 가장 확률이 좋은 방향을 계산해 반환하는 함수
+*/
+Direction AI::DecideBestDir(Position pos)
 {
 	Direction BestDir = DOWN;
 	int HighstPriority = 0;

@@ -1,15 +1,16 @@
 #include "stdafx.h"
 #include "Human.h"
-#include "Sound.h"
 #include "Print.h"
-#include "CustomDialogBox.h"
+#include "Sound.h"
 #include "GameManager.h"
+#include "CustomDialogBox.h"
+
 
 Human::Human()
 {
-	m_PlayerType = HUMAN_PLAYER;
-	m_ShipMoveLoop = ON;
-	m_MyDialogBox = nullptr;
+	m_PlayerType	= HUMAN_PLAYER;
+	m_ShipMoveLoop	= ON;
+	m_MyDialogBox	= nullptr;
 }
 
 
@@ -17,6 +18,9 @@ Human::~Human()
 {
 }
 
+/*
+	움직이려는 배(ship)와 현재 위치(curPos)와 현재 방향(curDir)을 받아 배를 이동시키는 함수
+*/
 void Human::MoveShip(Ship* ship, Position* curPos, Direction* curDir)
 {
 	int maxHp = ship->GetMaxHP();
@@ -28,20 +32,20 @@ void Human::MoveShip(Ship* ship, Position* curPos, Direction* curDir)
 		switch (input)
 		{
 		case UP_KEY:
-			if (IsValidShipPosition(curPos->x, curPos->y - 1, maxHp, *curDir))
-				curPos->y--;
+			if (IsValidShipPosition({ curPos->x, curPos->y - 1 }, *curDir, maxHp))
+				--curPos->y;
 			break;
 		case DOWN_KEY:
-			if (IsValidShipPosition(curPos->x, curPos->y + 1, maxHp, *curDir))
-				curPos->y++;
+			if (IsValidShipPosition({ curPos->x, curPos->y + 1 }, *curDir, maxHp))
+				++curPos->y;
 			break;
 		case LEFT_KEY:
-			if (IsValidShipPosition(curPos->x - 1, curPos->y, maxHp, *curDir))
-				curPos->x--;
+			if (IsValidShipPosition({ curPos->x - 1, curPos->y }, *curDir, maxHp))
+				--curPos->x;
 			break;
 		case RIGHT_KEY:
-			if (IsValidShipPosition(curPos->x + 1, curPos->y, maxHp, *curDir))
-				curPos->x++;
+			if (IsValidShipPosition({ curPos->x + 1, curPos->y }, *curDir, maxHp))
+				++curPos->x;
 			break;
 		}
 		Sound::Instance().MenuMoveSound();
@@ -53,13 +57,16 @@ void Human::MoveShip(Ship* ship, Position* curPos, Direction* curDir)
 	case SPACE_KEY:
 		int temp = *curDir;
 		temp = (temp + 1) % 4;
-		if (IsValidShipPosition(curPos->x, curPos->y, maxHp, (Direction)temp))
+		if (IsValidShipPosition(*curPos, (Direction)temp, maxHp))
 			*curDir = (Direction)temp;
 		Sound::Instance().MenuMoveSound();
 		break;
 	}
 }
 
+/*
+	제거하려는 배(ship)와 현재 위치(curPos)와 현재 방향(curDir)을 받아 배를 제거하는 함수
+*/
 void Human::DeleteShip(Ship* ship, Position curPos, Direction curDir)
 {
 	if (ship == nullptr || curPos.x < 0 || curPos.y < 0)
@@ -67,7 +74,7 @@ void Human::DeleteShip(Ship* ship, Position curPos, Direction curDir)
 
 	for (int i = 0; i < ship->GetMaxHP(); ++i)
 	{
-		m_MyBoard->AddPosition(curPos.x, curPos.y, NONE_SHIP);
+		m_MyBoard->AddPosition(curPos, NONE_SHIP);
 
 		switch (curDir)
 		{
@@ -80,27 +87,31 @@ void Human::DeleteShip(Ship* ship, Position curPos, Direction curDir)
 	ship->InitShip();
 }
 
+/*
+	배를 배치하는 함수
+*/
 void Human::SettingShips()
 {
 	int maxHeight = m_MyBoard->GetMaxHeight();
 	int maxWidth = m_MyBoard->GetMaxWidth();
-	int startX = 0;
-	int startY = 0;
+	Position startPos = { 0, 0 };
 
 	for (auto& ship : m_ShipList)
 	{
 		int maxHp = ship->GetMaxHP();
 		Direction direction = Direction(UP);
 
+		// 일단 임의의 위치에 배를 놓고
 		do {
 			direction = (Direction)(rand() % 4);
-			startX = rand() % maxWidth;
-			startY = rand() % maxHeight;
-		} while (!IsValidShipPosition(startX, startY, maxHp, direction));
+			startPos.x = rand() % maxWidth;
+			startPos.y = rand() % maxHeight;
+		} while (!IsValidShipPosition(startPos, direction, maxHp));
 		
-		PlaceShip(ship, startX, startY, direction);
-		Position curPos = { startX, startY };
+		PlaceShip(ship, startPos, direction);
+		Position curPos = startPos;
 
+		// 플레이어가 ENTER를 입력할 때까지 이동모드로 대기
 		while (m_ShipMoveLoop)
 		{
 			m_MyBoard->PrintBoard({ MY_BOARD_POS_X, MY_BOARD_POS_Y });
@@ -109,12 +120,15 @@ void Human::SettingShips()
 			Print::Instance().Init();
 			DeleteShip(ship, curPos, direction);
 			MoveShip(ship, &curPos, &direction);
-			PlaceShip(ship, curPos.x, curPos.y, direction);
+			PlaceShip(ship, curPos, direction);
 		}
 		m_ShipMoveLoop = ON;
 	}
 }
 
+/*
+	플레이어의 입력을 받아 해당 좌표를 공격하는 함수
+*/
 Position Human::Attack()
 {
 	std::string msg;
@@ -136,6 +150,7 @@ Position Human::Attack()
 		}
 		m_MyDialogBox->InitDialog();
 		m_MyDialogBox->PrintDialog();
+
 	} while (!m_EnemyBoard->IsValidAttack(attackX, attackY));
 
 	pos.x = attackX;

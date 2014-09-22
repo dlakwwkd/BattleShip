@@ -1,11 +1,9 @@
 #pragma once
-#include "stdafx.h"
 #include "Board.h"
-#include "AirCraft.h"
+#include "Aircraft.h"
 #include "BattleShip.h"
 #include "Cruiser.h"
 #include "Destroyer.h"
-#include "Enums.h"
 
 #define MAX_PREV_INFO_NUM 5
 
@@ -31,8 +29,8 @@ public:
 	virtual Position	Attack() = 0;
 
 protected:
-	void PlaceShip(Ship* ship, int startX, int startY, Direction direction);
-	bool IsValidShipPosition(int startX, int startY, int maxHp, Direction direction);
+	void PlaceShip(Ship* ship, Position startPos, Direction dir);
+	bool IsValidShipPosition(Position startPos, Direction dir, int maxHp);
 
 protected:
 	PlayerType				m_PlayerType;

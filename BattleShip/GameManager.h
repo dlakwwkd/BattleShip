@@ -1,12 +1,9 @@
 #pragma once
-#include "Enums.h"
-
-class Network;
 class CustomDialogBox;
 class Player;
 class Board;
 
-#define MAX_PLAY_NUM 9999
+#define MAX_PLAY_NUM 99999
 
 class GameManager
 {

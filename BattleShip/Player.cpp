@@ -30,7 +30,9 @@ Player::~Player()
 	delete m_MyBoard;
 }
 
-
+/*
+	플레이어를 초기화 하는 함수
+*/
 void Player::InitPlayer()
 {
 	for (auto& ship : m_ShipList)
@@ -41,6 +43,9 @@ void Player::InitPlayer()
 	m_EnemyBoard = nullptr;
 }
 
+/*
+	이 플레이어의 모든 배가 침몰했는지 확인하는 함수
+*/
 bool Player::IsAllSunk()
 {
 	for (auto& ship : m_ShipList)
@@ -51,6 +56,9 @@ bool Player::IsAllSunk()
 	return true;
 }
 
+/*
+	공격받은 좌표(pos)를 받아 그 결과를 반환하는 함수
+*/
 HitResult Player::DoHitCheck(Position pos)
 {
 	for (auto& ship : m_ShipList)
@@ -71,48 +79,49 @@ HitResult Player::DoHitCheck(Position pos)
 	return MISS;
 }
 
-void Player::PlaceShip(Ship* ship, int startX, int startY, Direction direction)
+/*
+	배(ship)와 그 시작지점(startPos)과 방향(dir)을 받아 배를 놓는 함수
+*/
+void Player::PlaceShip(Ship* ship, Position startPos, Direction dir)
 {
-	if (ship == nullptr || startX < 0 || startY < 0)
+	if (ship == nullptr || startPos.x < 0 || startPos.y < 0)
 		return;
 
-	int curX = startX;
-	int curY = startY;
+	Position curPos = startPos;
 
 	for (int i = 0; i < ship->GetMaxHP(); ++i)
 	{
-		ship->AddPosition({ curX, curY });
-		m_MyBoard->AddPosition(curX, curY, ship->GetShipType());
+		ship->AddPosition(curPos);
+		m_MyBoard->AddPosition(curPos, ship->GetShipType());
 
-		switch (direction)
+		switch (dir)
 		{
-		case UP:	curY--;	break;
-		case DOWN:	curY++;	break;
-		case LEFT:	curX--;	break;
-		case RIGHT:	curX++;	break;
+		case UP:	curPos.y--;	break;
+		case DOWN:	curPos.y++; break;
+		case LEFT:	curPos.x--;	break;
+		case RIGHT:	curPos.x++; break;
 		}
 	}
 }
 
-bool Player::IsValidShipPosition(int startX, int startY, int maxHp, Direction direction)
+/*
+	시작지점(startPos)와 방향(dir)과 배의 길이(maxHp)를 받아 배가 놓일 수 있는 좌표인지 확인하는 함수
+*/
+bool Player::IsValidShipPosition(Position startPos, Direction dir, int maxHp)
 {
 	if (maxHp < 1) return false;
 
-	int curX = startX;
-	int curY = startY;
+	int curX = startPos.x;
+	int curY = startPos.y;
 
 	for (int i = 0; i < maxHp; ++i)
 	{
 		if (m_MyBoard->IsInBoard(curX, curY) == false)
-		{
 			return false;
-		}
 		if (m_MyBoard->IsShipHere(curX, curY))
-		{
 			return false;
-		}
 
-		switch (direction)
+		switch (dir)
 		{
 		case UP:	curY--;	break;
 		case DOWN:	curY++;	break;

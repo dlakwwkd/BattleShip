@@ -21,11 +21,18 @@
 #include <vector>
 #include <map>
 
+#include "Enums.h"
+#include "Setting.h"
+
+// 디버그 기능 강화
 #include <crtdbg.h>
 #ifdef _DEBUG
 #define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #endif
 
+// 네트워크 활성화
+#include "Network.h"
+#include "ShipData.h"
 #ifdef _DEBUG
 // Debug로 빌드하는 경우
 #pragma comment(lib, "BGNL_debug.lib")
@@ -33,12 +40,3 @@
 // Release로 빌드하는 경우
 #pragma comment(lib, "BGNL.lib")
 #endif
-
-#include "Network.h"
-#include "ShipData.h"
-
-struct Position
-{
-	int x;
-	int y;
-};

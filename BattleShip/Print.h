@@ -1,14 +1,6 @@
 #pragma once
-#include "stdafx.h"
-#include "Enums.h"
-
 #define CONSOLE_LINES		35
 #define CONSOLE_COLS		112
-
-#define MY_BOARD_POS_X		30
-#define MY_BOARD_POS_Y		10
-#define ENEMY_BOARD_POS_X	60
-#define ENEMY_BOARD_POS_Y	10
 
 #define MAX_COLOR_LIST		16
 #define MAX_COLOR_BUFFER	128
@@ -29,7 +21,7 @@ public:
 	void SetColor(int color);
 
 	void SpecialPrint();
-	void MenuPrint(int curMenu, std::vector<std::string> menuList);
+	void MenuPrint(int curMenu, std::vector<std::string>& menuList);
 
 private:
 	Print();

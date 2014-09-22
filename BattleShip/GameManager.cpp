@@ -2,16 +2,17 @@
 #include "GameManager.h"
 #include "CustomDialogBox.h"
 #include "Print.h"
+#include "Sound.h"
 #include "Board.h"
 #include "Ship.h" 
-#include "Sound.h"
 #include "Menu.h"
 #include "Human.h"
 #include "AI.h"
 
+
 GameManager::GameManager()
 {
-	m_DialogBox		= nullptr;
+	m_DialogBox			= nullptr;
 	m_Player1			= nullptr;
 	m_Player2			= nullptr;
 	m_BoardPlayer1		= nullptr;
@@ -29,14 +30,19 @@ GameManager::GameManager()
 	m_TotalGameTurnNum	= 0;
 }
 
-
+/*
+	게임의 메인루프 함수
+	- MainMenu에서 게임 모드가 결정되며, 이에 따라 다른 로직을 따른다.
+	- 해당 게임이 끝나면, 초기화면으로 돌아간다.
+	- m_MainLoopOn이 off가 되면 게임이 완전히 종료된다.
+*/
 void GameManager::GameRun()
 {
 	while (m_MainLoopOn)
 	{
 		MainScreen();
 		Menu::Instance().MainMenu();
-		if (!m_MainLoopOn) return;
+		if (!m_MainLoopOn) break;
 
 		switch (m_GameMode)
 		{
@@ -74,37 +80,65 @@ void GameManager::GameRun()
 	}
 }
 
+/*
+	메인루프 시작시 기본적인 설정을 초기화하고 대기화면을 출력하는 함수
+*/
 void GameManager::MainScreen()
 {
 	srand((unsigned int)time(NULL));
 	system("mode con: lines=36 cols=112");
-	system("cls");
-	Board tempBoard;
-	tempBoard.SetBoardName("<( BattleShip )>");
-	tempBoard.PrintBoard({ (CONSOLE_COLS - tempBoard.GetMaxWidth()*3)/2,
-		CONSOLE_LINES/2 - tempBoard.GetMaxHeight()});
-	
-	Print::Instance().SpecialPrint();
-	Print::Instance().Init();
+
+	// 입력이 들어오기 전까지 대기화면을 계속 재생한다.
+	while (!_kbhit())
+	{
+		system("cls");
+		Board tempBoard;
+		tempBoard.SetBoardName("<( BattleShip )>");
+		tempBoard.PrintBoard({ (CONSOLE_COLS - tempBoard.GetMaxWidth() * 2) / 2,
+			(CONSOLE_LINES - tempBoard.GetMaxHeight()) / 2 });
+
+		Print::Instance().SpecialPrint();
+		Print::Instance().Init();
+	}
+	_getch();
 	Sound::Instance().StartSound();
 }
 
+/*
+	게임 플레이 횟수를 지정하는 함수
+*/
 void GameManager::SetGameLoopNum()
 {
 	do{
+		// 그리기
 		system("cls");
-		Print::Instance().Gotoxy(CONSOLE_COLS / 3, CONSOLE_LINES / 2);
-		printf_s("Set Play Number ( 1 ~ 9999 ): ");
+		Print::Instance().Gotoxy(CONSOLE_COLS / 3 + 3, CONSOLE_LINES / 3 + 1);
+		Print::Instance().SetColor(Color::BOX);
+		printf_s("┌──────────────┐");
+		Print::Instance().Gotoxy(CONSOLE_COLS / 3 + 3, CONSOLE_LINES / 3 + 2);
+		printf_s("│ Set Play Number (1 ~ 99999)│");
+		Print::Instance().Gotoxy(CONSOLE_COLS / 3 + 3, CONSOLE_LINES / 3 + 3);
+		printf_s("└──────────────┘");
+		Print::Instance().SetColor(Color::DEF);
+		Print::Instance().Gotoxy(CONSOLE_COLS / 3 + 15, CONSOLE_LINES / 3 + 5);
+		printf_s(": ");
 		Sound::Instance().MenuMoveSound();
-		char temp[5];
-		fgets(temp, 5, stdin);
+
+		// 잘못된 입력을 방지하기 위해 6 bit 내의 문자만 받아 정수로 변환
+		char temp[6];
+		fgets(temp, 6, stdin);
 		m_GameLoopNum = atoi(temp);
+
 	} while (m_GameLoopNum < 1 || m_GameLoopNum > MAX_PLAY_NUM);
+
 	fflush(stdin);
 	Sound::Instance().MenuEnterSound();
 	system("cls");
 }
 
+/*
+	게임 플레이 루프 함수
+*/
 void GameManager::PlayGameLoop()
 {
 	m_EachGameTurnNum = 0;
@@ -153,8 +187,6 @@ void GameManager::PlayGameLoop()
 				m_Turn = PLAYER_1;
 				break;
 			}
-		case DONE:
-			break;
 		}
 
 		if (m_PrintOn)
@@ -166,6 +198,7 @@ void GameManager::PlayGameLoop()
 			m_DialogBox->InitDialog();
 			m_DialogBox->PrintDialog();
 		}
+
 		m_Status = CheckGameStatus();
 	}
 
@@ -176,6 +209,9 @@ void GameManager::PlayGameLoop()
 	m_TotalGameTurnNum += m_EachGameTurnNum;
 }
 
+/*
+	게임 초기화 함수
+*/
 void GameManager::InitGame()
 {
 	if (m_GameMode == NETWORK_PLAY) puts("게임 시작!!");
@@ -222,6 +258,9 @@ void GameManager::InitGame()
 	}
 }
 
+/*
+	게임 종료 전 필요한 마무리 작업을 하는 함수
+*/
 void GameManager::CloseGame()
 {
 	if (m_PrintOn)
@@ -235,6 +274,9 @@ void GameManager::CloseGame()
 	getchar();
 }
 
+/*
+	플레이어 생성 및 설정 함수
+*/
 void GameManager::SetPlayer()
 {
 	if (m_PlayerType == HUMAN_PLAYER) m_Player1 = new Human();
@@ -247,34 +289,29 @@ void GameManager::SetPlayer()
 	m_Player2->GetMyBoard()->SetBoardName(m_Player2->GetPlayerName());
 }
 
+/*
+	플레이어 제거 함수
+	- 자식 클래스의 소멸자를 호출하기 위해서 다운캐스팅 한 후 delete 한다.
+*/
 void GameManager::DelPlayer()
 {
+	// 1p 제거
 	if (m_Player1->GetPlayerType() == AI_PLAYER)
-	{
-		AI* temp = (AI*)m_Player1;
-		delete temp;
-	}
+		delete (AI*)m_Player1;
 	else
-	{
-		Human* temp = (Human*)m_Player1;
-		delete temp;
-	}
+		delete (Human*)m_Player1;
+	// 2p 제거
 	if (m_Player2->GetPlayerType() == AI_PLAYER)
-	{
-		AI* temp = (AI*)m_Player2;
-		delete temp;
-	}
+		delete (AI*)m_Player2;
 	else
-	{
-		Human* temp = (Human*)m_Player2;
-		delete temp;
-	}
+		delete (Human*)m_Player2;
 }
 
-
+/*
+	네트워크 라이브러리를 사용한 온라인 대전을 주관하는 함수
+*/
 void GameManager::NetworkManager()
 {
-
 	Network network;
 	PacketType type;
 	ErrorType error;
@@ -336,7 +373,6 @@ void GameManager::NetworkManager()
 		puts("게임 시작 대기중");
 		network.WaitForStart(&gameStartData);
 		wprintf_s(L"매칭되었습니다. 상대방 이름: %s, 학번: %d\n", gameStartData.oppositionName, gameStartData.oppositionStudentID);
-
 
 		/*
 		** 게임 시작
@@ -555,7 +591,6 @@ void GameManager::NetworkManager()
 		}
 	}
 
-
 	/*
 	** 연결 종료
 	참고로 소멸시에도 자동으로 Disconnect를 호출한다.
@@ -563,7 +598,9 @@ void GameManager::NetworkManager()
 	network.Disconnect();
 }
 
-
+/*
+	보드의 위치(pos)와 키(num)를 받아 해당 보드의 위치를 지정하는 함수
+*/
 void GameManager::SetBoardPos(Position pos, int num)
 {
 	if (num<1 || num>2 || pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES)
@@ -571,6 +608,9 @@ void GameManager::SetBoardPos(Position pos, int num)
 	m_BoardPos[num - 1] = pos;
 }
 
+/*
+	보드의 키(num)를 받아 해당 보드의 위치를 반환하는 함수
+*/
 Position GameManager::GetBoardPos(int num)
 {
 	if (num<1 || num>2)
@@ -578,6 +618,9 @@ Position GameManager::GetBoardPos(int num)
 	return m_BoardPos[num];
 }
 
+/*
+	모든 배가 침몰했는지 검사해 게임이 끝났는지를 체크하는 함수
+*/
 GameStatus GameManager::CheckGameStatus()
 {
 	if (m_Player1->IsAllSunk()
@@ -588,6 +631,9 @@ GameStatus GameManager::CheckGameStatus()
 	return PLAYING;
 }
 
+/*
+	배치 좌표 정보를 네트워크 전송을 위한 자료형으로 변환하는 함수
+*/
 ShipData GameManager::TransforShipData(Player* player)
 {
 	ShipData ret;
@@ -605,6 +651,9 @@ ShipData GameManager::TransforShipData(Player* player)
 	return ret;
 }
 
+/*
+	네트워크에서 패킷으로 전달받은 공격결과 정보를 이 프로그램에 맞는 자료형으로 변환하는 함수
+*/
 HitResult GameManager::TransforHitResult(short info)
 {
 	switch (info)

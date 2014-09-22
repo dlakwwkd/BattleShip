@@ -27,15 +27,11 @@ void Sound::CloseSound()
 	Beep(784, 400);
 	Beep(880, 900);
 	Sleep(200);
-// 	Beep(784, 800);
-// 	Beep(880, 800);
-// 	Beep(999, 999);
-
 }
 
 void Sound::MissSound()
 {
-	//Beep(540, 200);
+	/*Beep(540, 200);*/
 }
 
 void Sound::HitSound()

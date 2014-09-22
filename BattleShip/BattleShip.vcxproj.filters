@@ -10,6 +10,9 @@
     <Filter Include="Player">
       <UniqueIdentifier>{fc2db5b0-376c-4cb5-925a-869f152daa17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{afbf2e4b-f8b7-4c52-b2ca-e36512bb3237}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,9 +39,6 @@
     <ClInclude Include="GameManager.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Enums.h" />
     <ClInclude Include="Player.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -59,6 +59,18 @@
     </ClInclude>
     <ClInclude Include="Human.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,8 +95,6 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -105,6 +115,12 @@
     </ClCompile>
     <ClCompile Include="Human.cpp">
       <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
