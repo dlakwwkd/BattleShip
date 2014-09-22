@@ -5,7 +5,7 @@
 #include "Cruiser.h"
 #include "Destroyer.h"
 
-#define MAX_PREV_INFO_NUM 5
+#define MAX_SHIP_NUM 5
 
 class Player
 {
@@ -25,8 +25,8 @@ public:
 	HitResult			DoHitCheck(Position pos);
 
 	virtual void		InitPlayer();
-	virtual void		SettingShips() = 0;
-	virtual Position	Attack() = 0;
+	virtual void		SettingShips()	 = 0;
+	virtual Position	Attack()		 = 0;
 
 protected:
 	void PlaceShip(Ship* ship, Position startPos, Direction dir);

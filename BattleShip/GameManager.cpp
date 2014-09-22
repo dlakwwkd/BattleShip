@@ -393,7 +393,8 @@ void GameManager::NetworkManager()
 			*/
 			ShipData shipData;
 			char mapData[MAP_SIZE];
-			while (true)
+			bool loop = true;
+			while (loop)
 			{
 				shipData = TransforShipData(m_Player1);
 				shipData.ToMapData(mapData);
@@ -408,7 +409,7 @@ void GameManager::NetworkManager()
 					}
 				}
 				else
-					break;
+					loop = false;
 			}
 
 			/*
@@ -453,7 +454,8 @@ void GameManager::NetworkManager()
 					** 공격 위치 전송
 					x, y는 0~7 사이의 정수이다.
 					*/
-					while (true)
+					bool loop = true;
+					while (loop)
 					{
 						Position attackPos = m_Player1->Attack();
 
@@ -468,7 +470,7 @@ void GameManager::NetworkManager()
 							}
 						}
 						else
-							break;
+							loop = false;
 					}
 					break;
 				}
@@ -603,8 +605,10 @@ void GameManager::NetworkManager()
 */
 void GameManager::SetBoardPos(Position pos, int num)
 {
+	_ASSERT(!(num<1 || num>2 || pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES));
 	if (num<1 || num>2 || pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES)
 		return;
+
 	m_BoardPos[num - 1] = pos;
 }
 
@@ -613,8 +617,10 @@ void GameManager::SetBoardPos(Position pos, int num)
 */
 Position GameManager::GetBoardPos(int num)
 {
+	_ASSERT(!(num<1 || num>2));
 	if (num<1 || num>2)
 		return { 0, 0 };
+
 	return m_BoardPos[num];
 }
 
@@ -637,6 +643,11 @@ GameStatus GameManager::CheckGameStatus()
 ShipData GameManager::TransforShipData(Player* player)
 {
 	ShipData ret;
+
+	_ASSERT(!(player == nullptr));
+	if (player == nullptr)
+		return ret;
+
 	Coord temp[MAX_SHIP_NUM + 1][MAX_SHIP_LEN];
 	for (int idx = 1; idx <= MAX_SHIP_NUM; ++idx)
 	{

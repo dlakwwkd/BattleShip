@@ -23,6 +23,10 @@ Human::~Human()
 */
 void Human::MoveShip(Ship* ship, Position* curPos, Direction* curDir)
 {
+	_ASSERT(!(ship == nullptr || curPos == nullptr || curDir == nullptr));
+	if (ship == nullptr || curPos == nullptr || curDir == nullptr)
+		return;
+
 	int maxHp = ship->GetMaxHP();
 	int input = _getch();
 	switch (input)
@@ -69,6 +73,7 @@ void Human::MoveShip(Ship* ship, Position* curPos, Direction* curDir)
 */
 void Human::DeleteShip(Ship* ship, Position curPos, Direction curDir)
 {
+	_ASSERT(!(ship == nullptr || curPos.x < 0 || curPos.y < 0));
 	if (ship == nullptr || curPos.x < 0 || curPos.y < 0)
 		return;
 

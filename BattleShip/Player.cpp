@@ -4,7 +4,7 @@
 
 Player::Player()
 {
-	m_ShipList.reserve(5);
+	m_ShipList.reserve(MAX_SHIP_NUM);
 	m_ShipList.push_back(new AirCraft());
 	m_ShipList.push_back(new BattleShip());
 	m_ShipList.push_back(new Cruiser());
@@ -23,10 +23,12 @@ Player::~Player()
 {
 	for (auto& ship : m_ShipList)
 	{
+		_ASSERT(ship != nullptr);
 		delete ship;
 	}
 	m_ShipList.clear();
 
+	_ASSERT(m_MyBoard != nullptr);
 	delete m_MyBoard;
 }
 
@@ -84,6 +86,7 @@ HitResult Player::DoHitCheck(Position pos)
 */
 void Player::PlaceShip(Ship* ship, Position startPos, Direction dir)
 {
+	_ASSERT(!(ship == nullptr || startPos.x < 0 || startPos.y < 0));
 	if (ship == nullptr || startPos.x < 0 || startPos.y < 0)
 		return;
 

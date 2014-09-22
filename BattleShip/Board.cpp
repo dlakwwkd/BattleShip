@@ -24,6 +24,8 @@ Board::Board()
 
 Board::~Board()
 {
+	_ASSERT(m_Board != nullptr);
+
 	// 동적 할당 해제
 	for (int dy = 0; dy < m_Height; ++dy)
 		delete[] m_Board[dy];
@@ -47,6 +49,7 @@ void Board::InitBoard()
 */
 void Board::PrintBoard(Position pos)
 {
+	_ASSERT(!(pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES));
 	if (pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES)
 		return;
 
@@ -100,6 +103,7 @@ void Board::PrintBoard(Position pos)
 */
 void Board::UpdateBoard(Position pos, Owner owner)
 {
+	_ASSERT(!(pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES));
 	if (pos.x<0 || pos.x>CONSOLE_COLS || pos.y<0 || pos.y>CONSOLE_LINES)
 		return;
 
@@ -197,7 +201,8 @@ void Board::ProcessAttack(Position pos)
 	int x = pos.x;
 	int y = pos.y;
 
-	if (IsInBoard(x, y) == false)
+	_ASSERT(IsInBoard(x, y));
+	if (!IsInBoard(x, y))
 		return;
 
 	// 배가 없는 곳일 경우 MISS 처리
@@ -214,13 +219,11 @@ void Board::ProcessAttack(Position pos)
 */
 void Board::ProcessAttack(Position pos, HitResult info)
 {
-	int x = pos.x;
-	int y = pos.y;
-
-	if (IsInBoard(x, y) == false)
+	_ASSERT(IsInBoard(pos.x, pos.y));
+	if (!IsInBoard(pos.x, pos.y))
 		return;
 
-	m_Board[y][x] = info;
+	m_Board[pos.y][pos.x] = info;
 }
 
 /*
@@ -230,7 +233,13 @@ void Board::ProcessDestroy(std::vector<Position> shipPos)
 {
 	// 히트처리된 값에 -10을 하면 파괴됨 처리가 된다.
 	for (auto& pos : shipPos)
+	{
+		_ASSERT(IsInBoard(pos.x, pos.y));
+		if (!IsInBoard(pos.x, pos.y))
+			break;
+
 		m_Board[pos.y][pos.x] -= 10;
+	}
 }
 
 /*
@@ -238,13 +247,11 @@ void Board::ProcessDestroy(std::vector<Position> shipPos)
 */
 void Board::AddPosition(Position pos, ShipType shipType)
 {
-	int x = pos.x;
-	int y = pos.y;
-
-	if (IsInBoard(x, y) == false)
+	_ASSERT(IsInBoard(pos.x, pos.y));
+	if (!IsInBoard(pos.x, pos.y))
 		return;
 
-	m_Board[y][x] = shipType;
+	m_Board[pos.y][pos.x] = shipType;
 }
 
 /*
@@ -252,7 +259,7 @@ void Board::AddPosition(Position pos, ShipType shipType)
 */
 bool Board::IsShipHere(int x, int y)
 {
-	if (IsInBoard(x, y) == false)
+	if (!IsInBoard(x, y))
 		return false;
 
 	if (m_Board[y][x] == 0)
@@ -266,7 +273,7 @@ bool Board::IsShipHere(int x, int y)
 */
 bool Board::IsValidAttack(int x, int y)
 {
-	if (IsInBoard(x,y) == false)
+	if (!IsInBoard(x, y))
 		return false;
 
 	if (m_Board[y][x] < 0)

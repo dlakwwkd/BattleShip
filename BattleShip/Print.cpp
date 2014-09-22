@@ -34,7 +34,10 @@ void Print::Init()
 */
 void Print::InText(int x, int y, std::string text)
 {
-	if (x < 0 || y < 0 || x > CONSOLE_COLS || y > CONSOLE_LINES) return;
+	_ASSERT(!(x < 0 || y < 0 || x > CONSOLE_COLS || y > CONSOLE_LINES));
+	if (x < 0 || y < 0 || x > CONSOLE_COLS || y > CONSOLE_LINES)
+		return;
+
 	for (unsigned int i = x; i < x + text.length(); ++i)
 		m_ScreenBuffer[y][i] = text[i - x];
 }
@@ -44,7 +47,10 @@ void Print::InText(int x, int y, std::string text)
 */
 void Print::InColor(int x, int y, Color type)
 {
-	if (x < 0 || y < 0 || x > CONSOLE_COLS || y > CONSOLE_LINES) return;
+	_ASSERT(!(x < 0 || y < 0 || x > CONSOLE_COLS || y > CONSOLE_LINES));
+	if (x < 0 || y < 0 || x > CONSOLE_COLS || y > CONSOLE_LINES)
+		return;
+
 	m_Color[type].push_back({ x, y });
 }
 
@@ -121,6 +127,7 @@ void Print::SpecialPrint()
 
 /*
 	현재 가르키고 있는 메뉴(curMenu)와 메뉴 목록(menuList)를 받아 색상을 구분해 출력하는 함수
+	- 불필요한 복사를 막기위해 &를 사용함
 */
 void Print::MenuPrint(int curMenu, std::vector<std::string>& menuList)
 {

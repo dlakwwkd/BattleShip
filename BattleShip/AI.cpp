@@ -5,7 +5,7 @@
 AI::AI()
 {
 	m_PlayerType	= AI_PLAYER;
-	m_MaxShipSize	= 5;
+	m_MaxShipSize	= MAX_SHIP_NUM;
 	m_PrevHitResult = NO_RESULT;
 	m_PriorityDir	= DOWN;
 	m_FirstHitPos	= { -1, -1 };
@@ -30,6 +30,8 @@ AI::AI()
 
 AI::~AI()
 {
+	_ASSERT(!(m_MyBoard == nullptr || m_PriorityPos == nullptr));
+
 	// 동적 할당 해제
 	for (int i = 0; i < m_MyBoard->GetMaxHeight(); ++i)
 		delete[] m_PriorityPos[i];
@@ -50,7 +52,7 @@ void AI::InitPlayer()
 */
 void AI::InitPriority()
 {
-	m_MaxShipSize	= 5;
+	m_MaxShipSize	= MAX_SHIP_NUM;
 	m_PrevHitResult = NO_RESULT;
 	m_PriorityDir	= DOWN;
 	m_FirstHitPos	= { -1, -1 };
@@ -265,6 +267,7 @@ void AI::RangeUpdate(int range, Position pos, PriorityCalcRate crossForm, Priori
 			int x, y;
 			x = pos.x + dx;
 			y = pos.y + dy;
+
 			if (!m_MyBoard->IsInBoard(x, y))
 				continue;
 			if (m_PriorityPos[y][x] == LOWEST_PRIORITY)
@@ -300,10 +303,12 @@ void AI::DecideNextAttack(Position pos, Direction dir)
 	int x, y;
 	x = pos.x + dx;
 	y = pos.y + dy;
+
 	if (!m_MyBoard->IsInBoard(x, y))
 		return;
 	if (m_PriorityPos[y][x] == LOWEST_PRIORITY)
 		return;
+
 	m_PriorityPos[y][x] = HIGHEST_PRIORITY;
 }
 
@@ -337,8 +342,10 @@ Direction AI::DecideBestDir(Position pos)
 			int x, y;
 			x = pos.x + dx*n;
 			y = pos.y + dy*n;
+
 			if (!m_MyBoard->IsInBoard(x, y))
 				break;
+
 			temp += m_PriorityPos[y][x];
 		}
 

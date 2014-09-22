@@ -39,6 +39,9 @@ void Menu::PlayerMenu()
 */
 void Menu::MenuPlatform(std::vector<std::string>& menuList, int menuType)
 {
+	_ASSERT(!(menuList.empty()));
+	if (menuList.empty()) return;
+
 	system("cls");
 	int curMenu = 0;
 	int input = 0;
@@ -116,6 +119,9 @@ void Menu::MenuPlatform(std::vector<std::string>& menuList, int menuType)
 */
 int Menu::MenuMove(int& curMenu, int maxMenuNum)
 {
+	_ASSERT(!(curMenu < 0 || curMenu > maxMenuNum));
+	if (curMenu < 0 || curMenu > maxMenuNum) return -1;
+
 	int input = _getch();
 	switch (input)
 	{
