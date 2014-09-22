@@ -145,7 +145,7 @@ Position Human::Attack()
 		m_MyDialogBox->InputDialog();
 		m_MyDialogBox->ProcessMessage();
 		if (GameManager::Instance().GetMainLoopStatus() == OFF)
-			return{ -1, -1 };
+			return pos;
 
 		msg = m_MyDialogBox->GetMessage();
 		if (msg.length() == 3)
