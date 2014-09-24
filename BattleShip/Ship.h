@@ -3,7 +3,7 @@ class Ship
 {
 public:
 	Ship();
-	~Ship();
+	virtual ~Ship();
 
 	int						GetHP() { return m_HP; }
 	int						GetMaxHP() { return m_MaxHP; }

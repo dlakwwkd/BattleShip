@@ -11,7 +11,7 @@ class Player
 {
 public:
 	Player();
-	~Player();
+	virtual ~Player();
 
 	void				SetPlayerName(std::string name) { m_Name = name; }
 	void				SetEnemyBoard(Board* enemyBoard) { m_EnemyBoard = enemyBoard; }

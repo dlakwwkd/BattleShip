@@ -30,8 +30,6 @@ AI::AI()
 
 AI::~AI()
 {
-	_ASSERT(!(m_MyBoard == nullptr || m_PriorityPos == nullptr));
-
 	// 동적 할당 해제
 	for (int i = 0; i < m_MyBoard->GetMaxHeight(); ++i)
 		delete[] m_PriorityPos[i];

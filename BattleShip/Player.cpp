@@ -21,14 +21,9 @@ Player::Player()
 
 Player::~Player()
 {
+	// 동적 할당 해제
 	for (auto& ship : m_ShipList)
-	{
-		_ASSERT(ship != nullptr);
 		delete ship;
-	}
-	m_ShipList.clear();
-
-	_ASSERT(m_MyBoard != nullptr);
 	delete m_MyBoard;
 }
 

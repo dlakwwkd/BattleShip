@@ -291,20 +291,16 @@ void GameManager::SetPlayer()
 
 /*
 	플레이어 제거 함수
-	- 자식 클래스의 소멸자를 호출하기 위해서 다운캐스팅 한 후 delete 한다.
 */
 void GameManager::DelPlayer()
 {
-	// 1p 제거
-	if (m_Player1->GetPlayerType() == AI_PLAYER)
-		delete (AI*)m_Player1;
-	else
-		delete (Human*)m_Player1;
-	// 2p 제거
-	if (m_Player2->GetPlayerType() == AI_PLAYER)
-		delete (AI*)m_Player2;
-	else
-		delete (Human*)m_Player2;
+	_ASSERT(!(m_Player1 == nullptr || m_Player2 == nullptr));
+	
+	delete m_Player1;
+	delete m_Player2;
+
+	m_Player1 = nullptr;
+	m_Player2 = nullptr;
 }
 
 /*

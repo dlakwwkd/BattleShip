@@ -24,8 +24,6 @@ Board::Board()
 
 Board::~Board()
 {
-	_ASSERT(m_Board != nullptr);
-
 	// 동적 할당 해제
 	for (int dy = 0; dy < m_Height; ++dy)
 		delete[] m_Board[dy];
